@@ -26,8 +26,24 @@ class MachineSpec: XmlSaxBase {
     override func parserDidStartDocument(_ parser: XMLParser) {
         print("machine spec start doc")
 
-        let machineSpecUrl = URL(string: getMachineSpecPath())
+        var machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
+
+        var handler = Document()
+        var include = XInclude()
+        include.delegate = handler
+
+        var fileHandle = FileHandle(forReadingAtPath: getMachineSpecPath())
+
+        if fileHandle != nil {
+            let data = fileHandle?.readDataToEndOfFile()
+            fileHandle?.closeFile()
+            var parser = XMLParser(data: data!)
+            parser.delegate = include
+            parser.parse()
+        }
+
+
 
 
     }
