@@ -42,10 +42,8 @@ class MachineSpec: XmlSaxBase {
             parser.delegate = include
             parser.parse()
         }
-
-
-
-
+        var filters = handler.filters
+        print("Filters: \(filters.count)")
     }
 
 }
