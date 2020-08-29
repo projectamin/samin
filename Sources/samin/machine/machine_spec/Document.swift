@@ -22,8 +22,16 @@ class Document: XmlSaxBase {
             currentFilter.element = string
         case "namespace":
             currentFilter.namespace = string
+        case "name":
+            currentFilter.name = string
+        case "position":
+            currentFilter.download = string
+        case "version":
+            currentFilter.version = string
+        case "module":
+            currentFilter.module = string
         default:
-            print("default")
+            print("")
         }
     }
 
