@@ -1,16 +1,7 @@
 import Foundation
 import FoundationXML
 
-struct samin {
-    var text = "Hello, World!"
-}
-
-func doSomething() {
-    let data = Data()
-
-}
-
-class Samin {
+public class Samin {
     func parse(profileUri: URL) {
         // TODO Generate input stream from URL/URI and call inputstream overload.
     }
@@ -23,6 +14,7 @@ class Samin {
 
         var machineSpec = MachineSpec()
 
+        // TODO manage xinclude.
         var xinclude = XInclude()
 
         xinclude.delegate = machineSpec
