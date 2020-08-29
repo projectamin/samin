@@ -29,9 +29,9 @@ class MachineSpec: XmlSaxBase {
         var machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
 
-        var handler = Document()
+        var document = Document()
         var include = XInclude()
-        include.delegate = handler
+        include.delegate = document
 
         var fileHandle = FileHandle(forReadingAtPath: getMachineSpecPath())
 
@@ -42,7 +42,7 @@ class MachineSpec: XmlSaxBase {
             parser.delegate = include
             parser.parse()
         }
-        var filters = handler.filters
+        var filters = document.filters
         print("Filters: \(filters.count)")
     }
 

@@ -3,15 +3,17 @@ import FoundationXML
 
 class Document: XmlSaxBase {
 
-    var filters = Array<Filter>()
-    var currentFilter = Filter()
+    var filters = Dictionary<String, Filter>()
+    var currentFilter: Filter? = nil
+    var currentFilterName:String? = nil
     var currentElement: String? = nil
     var machineName: String? = nil
 
     override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-
         if(elementName == "filter") {
             currentFilter = Filter()
+            currentFilterName = attributeDict["name"]
+            print(currentFilterName!)
         } else {
             currentElement = elementName
         }
@@ -20,17 +22,17 @@ class Document: XmlSaxBase {
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
         switch (currentElement) {
         case "element":
-            currentFilter.element = string
+            currentFilter?.element = string
         case "namespace":
-            currentFilter.namespace = string
+            currentFilter?.namespace = string
         case "name":
-            currentFilter.name = string
+            currentFilter?.name = string
         case "position":
-            currentFilter.download = string
+            currentFilter?.download = string
         case "version":
-            currentFilter.version = string
+            currentFilter?.version = string
         case "module":
-            currentFilter.module = string
+            currentFilter?.module = string
         default:
             return
         }
@@ -38,7 +40,7 @@ class Document: XmlSaxBase {
 
     override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if(elementName == "filter") {
-            filters.append(currentFilter)
+            filters[currentFilterName!] = currentFilter
         }
     }
 }
