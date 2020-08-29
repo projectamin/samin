@@ -25,6 +25,7 @@ public class Samin {
 
         // TODO place holder to allow things to compile till the
         // TODO output buffer is returned.
+        // TODO Amin perl implementation returns the spec Buffer_End
         let s = "<xml></xml>"
         let encodedDataArray = [UInt8](s.utf8)
         let outputstream = OutputStream.toMemory()

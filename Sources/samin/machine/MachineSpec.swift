@@ -7,6 +7,12 @@ import FoundationXML
 
 class MachineSpec: XmlSaxBase {
 
+    var name: String? = nil
+    var generator: String? = nil
+    var handler: String? = nil
+    var log: String? = nil
+    var filters = Dictionary<String, Filter>()
+
     // TODO make this pluggable so we can pull from NSBundle on iOS
     func getMachineSpecPath() -> String {
         let fileManager = FileManager()
@@ -24,6 +30,7 @@ class MachineSpec: XmlSaxBase {
     }
 
     override func parserDidStartDocument(_ parser: XMLParser) {
+        super.parserDidStartDocument(parser)
         print("machine spec start doc")
 
         var machineSpecUrl = URL(string: getMachineSpecPath())!
@@ -42,8 +49,13 @@ class MachineSpec: XmlSaxBase {
             parser.delegate = include
             parser.parse()
         }
-        var filters = document.filters
+
+        self.filters = document.filters
         print("Filters: \(filters.count)")
+    }
+
+    override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        super.parserDidStartDocument(parser)
     }
 
 }
