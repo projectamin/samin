@@ -6,6 +6,7 @@ class Document: XmlSaxBase {
     var filters = Array<Filter>()
     var currentFilter = Filter()
     var currentElement: String? = nil
+    var machineName: String? = nil
 
     override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
 
@@ -31,7 +32,7 @@ class Document: XmlSaxBase {
         case "module":
             currentFilter.module = string
         default:
-            print("")
+            return
         }
     }
 
@@ -40,10 +41,4 @@ class Document: XmlSaxBase {
             filters.append(currentFilter)
         }
     }
-
-    override func parserDidEndDocument(_ parser: XMLParser) {
-        print("Finished parsing machine_spec")
-        print("Filters: \(filters.count)")
-    }
-
 }
