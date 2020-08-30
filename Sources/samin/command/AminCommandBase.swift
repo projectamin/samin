@@ -10,7 +10,7 @@ class AminCommandBase: XmlSaxBase {
 
     func launchCommand() {
         let task = Process()
-        task.launchPath
+        // task.launchPath
         // task.arguments =
         // task.environment = // array of var / value
         // task.standardError = // Pipe object - valid on iOS also...
