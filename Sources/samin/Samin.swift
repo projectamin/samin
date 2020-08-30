@@ -2,6 +2,11 @@ import Foundation
 import FoundationXML
 
 public class Samin {
+
+    init() {
+        print("Amin - brought to you by the magic of dahuts everywhere.")
+    }
+
     func parse(profileUri: URL) {
         // TODO Generate input stream from URL/URI and call inputstream overload.
     }
