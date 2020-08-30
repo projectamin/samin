@@ -25,8 +25,6 @@ public class Samin {
 
         var loadedSpec = machineSpec.machineSpec
 
-
-
         // TODO place holder to allow things to compile till the
         // TODO output buffer is returned.
         // TODO Amin perl implementation returns the spec Buffer_End
