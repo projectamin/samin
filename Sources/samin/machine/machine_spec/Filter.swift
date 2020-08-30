@@ -1,11 +1,12 @@
 import Foundation
 
-class Filter {
-    var element: String?
-    var namespace: String?
-    var name: String?
-    var position: String?
-    var download: String?
-    var version: String?
-    var module: String?
+public class Filter {
+    var element = ""
+    var namespace = ""
+    var name = ""
+    var position = ""
+    var download = ""
+    var version = ""
+    var module = ""
+    var instance: XmlSaxBase? = nil
 }

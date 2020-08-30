@@ -1,11 +1,16 @@
 import Foundation
 import FoundationXML
 
-open class XmlSaxBase: XMLParserDelegate {
+open class XmlSaxBase: NSObject, XMLParserDelegate {
 
     // Akin to a handler in XML::SAX::Base in Perl land
     // we will refer to such in Objc/Swift terms.
     weak var delegate: XmlSaxBase?
+
+    // To allow dynamic creation
+    public override required init() {
+        super.init()
+    }
 
     // This is just a very simple bandaid implementation to replicate basic principal of
     // Perls XML::SAX::Base

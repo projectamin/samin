@@ -12,38 +12,45 @@ class Document: XmlSaxBase {
     var handlerClass: String? = nil
     var logClass: String? = nil
 
+    // Strips out :: in machine spec to map to swift class names.
+    func processFilterName(name: String) -> String {
+        return name.trimmingCharacters(in: .whitespacesAndNewlines)
+                .replacingOccurrences(of: "::", with: "", options: NSString.CompareOptions.literal, range: nil)
+    }
+
     override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         super.parserDidStartDocument(parser)
         switch(elementName) {
         case "filter":
             currentFilter = Filter()
-            currentFilterClass = attributeDict["name"]
-            print(currentFilterClass!)
+            currentFilterClass = processFilterName(name: attributeDict["name"]!)
         case "generator":
-            generatorClass = attributeDict["name"]
+            generatorClass = processFilterName(name: attributeDict["name"]!)
         case "handler":
-            handlerClass = attributeDict["name"]
+            handlerClass = processFilterName(name: attributeDict["name"]!)
         case "log":
-            logClass = attributeDict["name"]
+            logClass = processFilterName(name: attributeDict["name"]!)
         default:
-            currentElement = elementName
+            currentElement = elementName.trimmingCharacters(in: .whitespacesAndNewlines)
         }
     }
 
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
         switch (currentElement) {
         case "element":
-            currentFilter?.element = string
+            currentFilter?.element += string.trimmingCharacters(in: .whitespacesAndNewlines)
         case "namespace":
-            currentFilter?.namespace = string
+            currentFilter?.namespace += string.trimmingCharacters(in: .whitespacesAndNewlines)
         case "name":
-            currentFilter?.name = string
+            currentFilter?.name += processFilterName(name: string)
+        case "download":
+            currentFilter?.download += string.trimmingCharacters(in: .whitespacesAndNewlines)
         case "position":
-            currentFilter?.download = string
+            currentFilter?.position += string.trimmingCharacters(in: .whitespacesAndNewlines)
         case "version":
-            currentFilter?.version = string
+            currentFilter?.version += string.trimmingCharacters(in: .whitespacesAndNewlines)
         case "module":
-            currentFilter?.module = string
+            currentFilter?.module += string.trimmingCharacters(in: .whitespacesAndNewlines)
         default:
             return
         }
