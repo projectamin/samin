@@ -24,11 +24,29 @@ public class Samin {
 
         xinclude.delegate = machineSpec
 
-        var parser = XMLParser(stream: profileStream)
-        parser.delegate = xinclude
-        parser.parse()
+
+        // TODO revisit machine spec - we should trigger this just using
+        // TODO passed in URI or default i.e. don't have path magic in
+        // TODO spec filter pull into setup aka here / related thing
+        // TODO and leave spec filter doing parsing logic only.
+        // TODO haven't got there yet but suspect profile stream will
+        // TODO need resetting as it will have been read to end.
+        // TODO non optimal for stream processing. We want bytes off pipe
+        // TODO being stuff straight into parser below not triggering spec read.
+        var machineSpecParser = XMLParser(stream: profileStream)
+        machineSpecParser.delegate = xinclude
+        machineSpecParser.parse()
 
         var loadedSpec = machineSpec.machineSpec
+
+        // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
+        // TODO to AminMachineDispatcher.
+
+        var machine = AminMachineDispatcher(machineSpec: loadedSpec)
+
+        var parser = XMLParser(stream: profileStream)
+        // parser.delegate =
+
 
         // TODO place holder to allow things to compile till the
         // TODO output buffer is returned.

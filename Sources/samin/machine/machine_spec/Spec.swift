@@ -5,6 +5,13 @@
 import Foundation
 
 public class Spec {
+
+    // TODO have the created instances available on Spec.
+    // TODO Machine/Handler/etc it should have failed or defaulted already.
+    // TODO Amin used perl magic to allow variable over writing as the pipeline
+    // TODO was setup but in typed land not the case.
+    // TODO So we need to establish an interface and load as part of spec creation.
+
     // The name of the current machine.
     var name: String? = nil
     // The class to use as the XML generator.
