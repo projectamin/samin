@@ -10,7 +10,7 @@ public class Spec {
     // TODO Machine/Handler/etc it should have failed or defaulted already.
     // TODO Amin used perl magic to allow variable over writing as the pipeline
     // TODO was setup but in typed land not the case.
-    // TODO So we need to establish an interface and load as part of spec creation.
+    // TODO So we need to establish an interfaces and load as part of spec creation.
 
     // The name of the current machine.
     var name: String? = nil

@@ -4,6 +4,9 @@ import FoundationXML
 // This is reflective of Amin::Elt - just found the original naming confusing.
 class AminCommandBase: XmlSaxBase {
 
+    public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        print("AminCommandBase start element")
+    }
 
 
     func commandMessage() {

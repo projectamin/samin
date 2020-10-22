@@ -33,7 +33,10 @@ public class Samin {
         // TODO need resetting as it will have been read to end.
         // TODO non optimal for stream processing. We want bytes off pipe
         // TODO being stuff straight into parser below not triggering spec read.
-        var machineSpecParser = XMLParser(stream: profileStream)
+        var specXmlTrigger = "<trigger xmlns:amin='http://projectamin.org/ns/'></trigger>"
+        var data = specXmlTrigger.data(using: .utf8)
+        var inputStream = InputStream(data: data!)
+        var machineSpecParser = XMLParser(stream: inputStream)
         machineSpecParser.delegate = xinclude
         machineSpecParser.parse()
 
@@ -45,7 +48,8 @@ public class Samin {
         var machine = AminMachineDispatcher(machineSpec: loadedSpec)
 
         var parser = XMLParser(stream: profileStream)
-        // parser.delegate =
+        parser.delegate = machine
+        parser.parse()
 
 
         // TODO place holder to allow things to compile till the

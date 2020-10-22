@@ -49,30 +49,24 @@ class MachineSpec: XmlSaxBase {
             do {
                 try document.filters.forEach{
                     key, value in
-                    print(key)
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
                     let createdClass = NSClassFromString("samin.\(key)") as! XmlSaxBase.Type
                     let instance = createdClass.init()
 
-
-                    var foo = AminCommandEcho()
-                    var classType = type(of: key)
-                    // var instance = classType.init() as? XmlSaxBase
-                    // var instance = Bundle.main.classNamed("\(key)") as? XmlSaxBase
                     if(instance == nil) {
                         throw MachineSpecError.unableToLoadFilter(filter: key)
                     }
                     switch(value.position) {
                     case "begin":
-                        self.machineSpec.filters["begin"]![key] = instance
+                        self.machineSpec.filters["begin"]![value.name] = instance
                     case "permanent":
-                        self.machineSpec.filters["permanent"]![key] = instance
+                        self.machineSpec.filters["permanent"]![value.name] = instance
                     case "middle":
-                        self.machineSpec.filters["middle"]![key] = instance
+                        self.machineSpec.filters["middle"]![value.name] = instance
                     case "end":
-                        self.machineSpec.filters["end"]![key] = instance
+                        self.machineSpec.filters["end"]![value.name] = instance
                     default:
                         throw MachineSpecError.invalidPosition
                     }
