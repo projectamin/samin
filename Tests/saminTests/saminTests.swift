@@ -11,7 +11,16 @@ final class saminTests: XCTestCase {
         amin.parse(profileStream: inputStream)
     }
 
+    func testEcho() {
+        var amin = Samin()
+        var profile = "<amin:profile xmlns:amin='http://projectamin.org/ns/'>\n<amin:command name=\"echo\">\n<amin:flag name=\"n\" />\n<amin:param>some string here</amin:param>\n</amin:command>\n</amin:profile>"
+        var data = profile.data(using: .utf8)
+        var inputStream = InputStream(data: data!)
+        amin.parse(profileStream: inputStream)
+    }
+
     static var allTests = [
-        ("testCrankSamin", testCrankSamin)
+        // ("testCrankSamin", testCrankSamin),
+        ("testEcho", testEcho)
     ]
 }
