@@ -10,8 +10,16 @@ class AminMachineDispatcher: XmlSaxBase {
     }
 
     init(machineSpec: Spec) {
-        self.filters = machineSpec.filters
         super.init()
+        self.filters = machineSpec.filters
+        print(self.filters)
+    }
+
+    // Sorts the filters into the correct order for dispatching.
+    // This also sets up the chains for each 'middle' filter.
+    private func setFilterHandlers() {
+        let middleFilters = self.filters!["middle"]!
+
     }
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {

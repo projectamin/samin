@@ -1,0 +1,34 @@
+<amin:profile xmlns:amin="http://projectamin.org/ns/">
+    <amin:cond name="arch">
+        <amin:ppc32>
+            <amin:command name="mkdir">
+                <amin:param>/tmp/ppc32</amin:param>
+            </amin:command>
+        </amin:ppc32>
+        <amin:ppc64>
+            <amin:command name="mkdir">
+                <amin:param>/tmp/ppc64</amin:param>
+            </amin:command>
+        </amin:ppc64>
+        <amin:s390>
+            <amin:command name="mkdir">
+                <amin:param>/tmp/s390</amin:param>
+            </amin:command>
+        </amin:s390>
+        <amin:x86_64>
+            <amin:command name="mkdir">
+                <amin:param>/tmp/x86_64</amin:param>
+            </amin:command>
+        </amin:x86_64>
+        <amin:ia64>
+            <amin:command name="mkdir">
+                <amin:param>/tmp/ia64</amin:param>
+            </amin:command>
+        </amin:ia64>
+        <amin:ia32>
+            <amin:command name="mkdir">
+                <amin:param>/tmp/ia32</amin:param>
+            </amin:command>
+        </amin:ia32>
+    </amin:cond>
+</amin:profile>
