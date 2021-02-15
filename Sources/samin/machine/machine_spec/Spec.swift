@@ -22,6 +22,8 @@ public class Spec {
     // This maps filters to position keyed by name.
     var filters = Dictionary<String, Dictionary<String, XmlSaxBase>>()
 
+    var buffer: OutputStream? = nil
+
     init() {
         // TODO Make dynamic?
         filters["begin"] = Dictionary<String, XmlSaxBase>()

@@ -3,6 +3,9 @@ import FoundationXML
 
 public class Samin {
 
+    // TODO Temporary to get going
+    let outputstream = OutputStream.toMemory()
+
     init() {
         print("Amin - brought to you by the magic of dahuts everywhere.")
     }
@@ -17,10 +20,10 @@ public class Samin {
 
     func parse(profileStream: InputStream) -> OutputStream {
 
-        var machineSpec = MachineSpec()
+        let machineSpec = MachineSpec()
 
         // TODO manage xinclude.
-        var xinclude = XInclude()
+        let xinclude = XInclude()
 
         xinclude.delegate = machineSpec
 
@@ -40,12 +43,13 @@ public class Samin {
         machineSpecParser.delegate = xinclude
         machineSpecParser.parse()
 
-        var loadedSpec = machineSpec.machineSpec
+        let loadedSpec = machineSpec.machineSpec
+        loadedSpec.buffer = outputstream
 
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
 
-        var machine = AminMachineDispatcher(machineSpec: loadedSpec)
+        let machine = AminMachineDispatcher(machineSpec: loadedSpec)
 
         var parser = XMLParser(stream: profileStream)
         parser.delegate = machine
@@ -57,7 +61,6 @@ public class Samin {
         // TODO Amin perl implementation returns the spec Buffer_End
         let s = "<xml></xml>"
         let encodedDataArray = [UInt8](s.utf8)
-        let outputstream = OutputStream.toMemory()
         outputstream.write(encodedDataArray, maxLength: encodedDataArray.count)
         return outputstream
     }
