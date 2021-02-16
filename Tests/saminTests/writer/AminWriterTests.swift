@@ -16,6 +16,10 @@ class AminWriterTests: XCTestCase {
         let outputData = output.property(forKey: Stream.PropertyKey.dataWrittenToMemoryStreamKey) as! Data
         let outputBytes = [UInt8](outputData)
         print("outputBytes=\(outputBytes)")
+        let outputXml = String(decoding: outputData, as: UTF8.self)
+        print(profile)
+        print(outputXml)
+        assert(profile == outputXml)
     }
 
     static var allTests = [

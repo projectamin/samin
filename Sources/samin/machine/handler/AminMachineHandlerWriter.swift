@@ -12,20 +12,17 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
     init(machineSpec: Spec!) {
         super.init()
-        print(spec)
         spec = machineSpec
     }
 
     override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String: String]) {
-        print("Writer!")
-        print(spec)
         var startElement = "<"
-        startElement += elementName + " "
+        startElement += elementName
 
         // TODO deal with namespace. Refactor into common write functions.
         if ((attributeDict.count) != 0) {
             attributeDict.forEach { attribute in
-                startElement += attribute.key + ":" + attribute.value + " "
+                startElement += " \(attribute.key)=\"\(attribute.value)\""
             }
         }
 
@@ -37,6 +34,13 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
         print(spec)
 
+        let result = spec!.buffer?.write(xmlByteArray, maxLength: xmlByteArray.count)
+        print(result!)
+    }
+
+    override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        var endElement = "</\(elementName)>"
+        let xmlByteArray = [UInt8](endElement.utf8)
         let result = spec!.buffer?.write(xmlByteArray, maxLength: xmlByteArray.count)
         print(result!)
     }
