@@ -28,7 +28,7 @@ class Document: XmlSaxBase {
             generatorClass = processFilterName(name: attributeDict["name"]!)
         case "handler":
             handlerClass = processFilterName(name: attributeDict["name"]!)
-        case "log":
+        case "writer":
             logClass = processFilterName(name: attributeDict["name"]!)
         default:
             currentElement = elementName.trimmingCharacters(in: .whitespacesAndNewlines)

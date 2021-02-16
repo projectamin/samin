@@ -3,8 +3,9 @@ import FoundationXML
 
 public class Samin {
 
-    // TODO Temporary to get going
+    // TODO Temporary to get going is equal to the Buffer in perl.
     let outputstream = OutputStream.toMemory()
+    var spec: Spec?
 
     init() {
         print("Amin - brought to you by the magic of dahuts everywhere.")
@@ -20,12 +21,16 @@ public class Samin {
 
     func parse(profileStream: InputStream) -> OutputStream {
 
-        let machineSpec = MachineSpec()
+        // Make sure the output stream is open for writing.
+        outputstream.open()
+
+        // NOTE this varies from Perl where it needs to be triggered by profile processing.
+        // here we load the spec up front until I decide Bryan was right and this is a bad idea.
+        let machineSpecProcessor = MachineSpecProcessor()
 
         // TODO manage xinclude.
         let xinclude = XInclude()
-
-        xinclude.delegate = machineSpec
+        xinclude.delegate = machineSpecProcessor
 
 
         // TODO revisit machine spec - we should trigger this just using
@@ -36,32 +41,26 @@ public class Samin {
         // TODO need resetting as it will have been read to end.
         // TODO non optimal for stream processing. We want bytes off pipe
         // TODO being stuff straight into parser below not triggering spec read.
-        var specXmlTrigger = "<trigger xmlns:amin='http://projectamin.org/ns/'></trigger>"
-        var data = specXmlTrigger.data(using: .utf8)
-        var inputStream = InputStream(data: data!)
-        var machineSpecParser = XMLParser(stream: inputStream)
-        machineSpecParser.delegate = xinclude
-        machineSpecParser.parse()
+        machineSpecProcessor.parseMachineSpec()
 
-        let loadedSpec = machineSpec.machineSpec
-        loadedSpec.buffer = outputstream
+        spec = machineSpecProcessor.machineSpec
+        print("loadedSpec \(spec!)")
+        spec!.buffer = outputstream
 
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
 
-        let machine = AminMachineDispatcher(machineSpec: loadedSpec)
+        let machine = AminMachineDispatcher(machineSpec: spec!)
 
-        var parser = XMLParser(stream: profileStream)
-        parser.delegate = machine
-        parser.parse()
-
-
-        // TODO place holder to allow things to compile till the
-        // TODO output buffer is returned.
-        // TODO Amin perl implementation returns the spec Buffer_End
-        let s = "<xml></xml>"
-        let encodedDataArray = [UInt8](s.utf8)
-        outputstream.write(encodedDataArray, maxLength: encodedDataArray.count)
+        // This is the core machine parser.
+        let profileParser = XMLParser(stream: profileStream)
+        profileParser.delegate = machine
+        let success = profileParser.parse()
+        if(success) {
+            print("Parsing succeeded")
+        } else {
+            print("Parsing failed.")
+        }
         return outputstream
     }
 

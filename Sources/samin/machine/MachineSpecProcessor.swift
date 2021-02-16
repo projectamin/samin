@@ -5,7 +5,7 @@
 import Foundation
 import FoundationXML
 
-class MachineSpec: XmlSaxBase {
+class MachineSpecProcessor: XmlSaxBase {
 
     var machineSpec = Spec()
 
@@ -25,8 +25,8 @@ class MachineSpec: XmlSaxBase {
         return "/etc/machine_spec.xml"
     }
 
-    override func parserDidStartDocument(_ parser: XMLParser) {
-        super.parserDidStartDocument(parser)
+    // TODO Allow passing machine spec url.
+    public func parseMachineSpec() {
         print("machine spec start doc")
 
         var machineSpecUrl = URL(string: getMachineSpecPath())!
@@ -52,8 +52,12 @@ class MachineSpec: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
-                    let createdClass = NSClassFromString("samin.\(key)") as! XmlSaxBase.Type
-                    let instance = createdClass.init()
+                    var createdClass = NSClassFromString("samin.\(key)")
+                    if(createdClass == nil) {
+                        createdClass = NSClassFromString("saminTests.\(key)")
+                    }
+                    let typedInstance = createdClass as! XmlSaxBase.Type
+                    let instance = typedInstance.init()
 
                     if(instance == nil) {
                         throw MachineSpecError.unableToLoadFilter(filter: key)

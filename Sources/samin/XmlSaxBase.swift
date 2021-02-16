@@ -6,7 +6,7 @@ open class XmlSaxBase: NSObject, XMLParserDelegate {
     // Akin to a handler in XML::SAX::Base in Perl land
     // we will refer to such in Objc/Swift terms.
     weak var delegate: XmlSaxBase?
-    weak var spec: Spec?
+    var spec: Spec?
 
     // To allow dynamic creation
     public override required init() {

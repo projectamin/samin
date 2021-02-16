@@ -21,6 +21,7 @@ public class Spec {
     var log: String? = nil
     // This maps filters to position keyed by name.
     var filters = Dictionary<String, Dictionary<String, XmlSaxBase>>()
+    let writer = AminMachineHandlerWriter()
 
     var buffer: OutputStream? = nil
 
@@ -30,5 +31,10 @@ public class Spec {
         filters["permanent"] = Dictionary<String, XmlSaxBase>()
         filters["middle"] = Dictionary<String, XmlSaxBase>()
         filters["end"] = Dictionary<String, XmlSaxBase>()
+        writer.spec = self
+    }
+
+    deinit {
+        print("Spec is being deinitialized")
     }
 }

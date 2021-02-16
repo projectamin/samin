@@ -42,6 +42,6 @@ final class saminTests: XCTestCase, StreamDelegate {
     static var allTests = [
         ("testCrankSamin", testCrankSamin),
         ("testEcho", testEcho),
-        ("testArch", testArch)
+        ("testArch", testArch),
     ]
 }
