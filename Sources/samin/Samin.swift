@@ -55,11 +55,17 @@ public class Samin {
         // This is the core machine parser.
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine
-        let success = profileParser.parse()
-        if(success) {
-            print("Parsing succeeded")
-        } else {
-            print("Parsing failed.")
+
+        // OK here we launch the parsing off into the sunset and return the stream immediately.
+        let queue = DispatchQueue(label: "Amin Dispatch Queue")
+        queue.async { [self] in
+            let success = profileParser.parse()
+            outputstream.close()
+            if(success) {
+                print("Parsing succeeded")
+            } else {
+                print("Parsing failed.")
+            }
         }
         return outputstream
     }

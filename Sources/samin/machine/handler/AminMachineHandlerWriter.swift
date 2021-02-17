@@ -32,22 +32,25 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
         let xmlByteArray = [UInt8](startElement.utf8)
 
-        print(spec)
-
-        let result = spec!.buffer?.write(xmlByteArray, maxLength: xmlByteArray.count)
-        print(result!)
+        writeToOutputStream(data: xmlByteArray, length: xmlByteArray.count)
     }
 
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
         let charactersArray = [UInt8](string.utf8)
-        let result = spec!.buffer?.write(charactersArray, maxLength: charactersArray.count)
-        print(result!)
+        writeToOutputStream(data: charactersArray, length: charactersArray.count)
     }
 
     override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        var endElement = "</\(elementName)>"
+        let endElement = "</\(elementName)>"
         let xmlByteArray = [UInt8](endElement.utf8)
-        let result = spec!.buffer?.write(xmlByteArray, maxLength: xmlByteArray.count)
-        print(result!)
+        writeToOutputStream(data: xmlByteArray, length: xmlByteArray.count)
+    }
+
+    // Marshall back to the main thread for updating the output stream
+    private func writeToOutputStream(data: [UInt8], length: Int) {
+        DispatchQueue.main.async { [self] in
+            let result = spec!.buffer!.write(data, maxLength:length)
+            print(result)
+        }
     }
 }
