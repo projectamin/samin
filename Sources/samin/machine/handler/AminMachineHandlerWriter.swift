@@ -38,6 +38,12 @@ class AminMachineHandlerWriter: XmlSaxBase {
         print(result!)
     }
 
+    override func parser(_ parser: XMLParser, foundCharacters string: String) {
+        let charactersArray = [UInt8](string.utf8)
+        let result = spec!.buffer?.write(charactersArray, maxLength: charactersArray.count)
+        print(result!)
+    }
+
     override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         var endElement = "</\(elementName)>"
         let xmlByteArray = [UInt8](endElement.utf8)

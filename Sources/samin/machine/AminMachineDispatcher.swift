@@ -53,4 +53,8 @@ class AminMachineDispatcher: XmlSaxBase {
         //delegate = filter
         //delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
     }
+
+    override func parser(_ parser: XMLParser, foundCharacters string: String) {
+        spec!.writer.parser(parser, foundCharacters: string)
+    }
 }

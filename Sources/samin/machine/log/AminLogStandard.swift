@@ -3,6 +3,8 @@
 //
 
 import Foundation
+import FoundationXML
 
-class AminLogStandard {
+class AminLogStandard: XmlSaxBase {
+
 }
