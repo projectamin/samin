@@ -12,15 +12,15 @@ class AminWriterTests: XCTestCase {
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
         let output = amin.parse(profileStream: inputStream)
-        while(output.streamStatus == .open) {
+        while(output.streamStatus != .closed) {
 
         }
         let outputData = output.property(forKey: Stream.PropertyKey.dataWrittenToMemoryStreamKey) as! Data
         let outputBytes = [UInt8](outputData)
-        let outputXml = String(decoding: outputData, as: UTF8.self)
+        let outputXml = String(decoding: outputBytes, as: UTF8.self)
         print("PROFILE: \(profile)")
         print("OUTPUT: \(outputXml)")
-        // assert(profile == outputXml)
+        assert(profile == outputXml)
     }
 
     static var allTests = [

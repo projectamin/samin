@@ -28,8 +28,6 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
         startElement += ">"
 
-        print(startElement)
-
         let xmlByteArray = [UInt8](startElement.utf8)
 
         writeToOutputStream(data: xmlByteArray, length: xmlByteArray.count)
@@ -48,9 +46,6 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
     // Marshall back to the main thread for updating the output stream
     private func writeToOutputStream(data: [UInt8], length: Int) {
-        DispatchQueue.main.async { [self] in
-            let result = spec!.buffer!.write(data, maxLength:length)
-            print(result)
-        }
+        _ = spec!.buffer!.write(data, maxLength:length)
     }
 }
