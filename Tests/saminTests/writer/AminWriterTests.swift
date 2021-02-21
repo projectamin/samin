@@ -12,7 +12,7 @@ class AminWriterTests: XCTestCase {
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
         let output = amin.parse(profileStream: inputStream)
-        // Wait until amin has closed the stream post parsing.
+        // Wait for amin to close the stream post parsing.
         while(output.streamStatus != .closed) {
 
         }
