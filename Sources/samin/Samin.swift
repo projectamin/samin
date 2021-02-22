@@ -21,9 +21,6 @@ public class Samin {
 
     func parse(profileStream: InputStream) -> OutputStream {
 
-        // Make sure the output stream is open for writing.
-        outputstream.open()
-
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
         let machineSpecProcessor = MachineSpecProcessor()
@@ -56,11 +53,17 @@ public class Samin {
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine
 
+        // Make sure the output stream is open for writing.
+        outputstream.open()
+
         // OK here we launch the parsing off into the sunset and return the stream immediately.
         let queue = DispatchQueue(label: "Amin Dispatch Queue")
         queue.async { [self] in
             let success = profileParser.parse()
-            outputstream.close()
+            // Close stream back on main thread.
+            DispatchQueue.main.sync {
+                outputstream.close()
+            }
             if(success) {
                 print("Parsing succeeded")
             } else {
