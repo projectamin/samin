@@ -9,7 +9,6 @@ class AminMachineDispatcher: XmlSaxBase {
 
     init(machineSpec: Spec!) {
         super.init()
-        print("Dispacther machine spec \(machineSpec)")
         spec = machineSpec
     }
 
@@ -26,6 +25,7 @@ class AminMachineDispatcher: XmlSaxBase {
     }
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        print("did start element dispatcher")
         spec!.writer.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
 
         // TODO Check spec for error.
