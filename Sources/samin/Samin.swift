@@ -47,6 +47,7 @@ public class Samin {
         print("loadedSpec \(spec!)")
         spec!.buffer = outputstream
 
+
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
 
