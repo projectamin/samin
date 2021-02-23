@@ -1,0 +1,14 @@
+<amin:profile xmlns:amin="http://projectamin.org/ns/">
+    <amin:command name='mkdir'>
+        <amin:param name="target">/tmp/samin_build</amin:param>
+    </amin:command>
+    <amin:download>
+        <amin:param name="uri">https://swift.org/builds/swift-5.3.3-release/ubuntu2004/swift-5.3.3-RELEASE/swift-5.3.3-RELEASE-ubuntu20.04.tar.gz</amin:param>
+        <amin:param name="file">/tmp/samin_build/swift-5.3.3-RELEASE-ubuntu20.04.tar.gz</amin:param>
+    </amin:download>
+    <amin:command name="unpack">
+        <amin:param name="target">/tmp/samin_build/</amin:param>
+        <amin:param name="archive">/tmp/samin_build/swift-5.3.3-RELEASE-ubuntu20.04.tar.gz</amin:param>
+    </amin:command>
+    <!-- TODO Add swift-build command to amin / samin -->
+</amin:profile>
