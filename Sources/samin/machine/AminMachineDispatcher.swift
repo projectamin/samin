@@ -15,11 +15,13 @@ class AminMachineDispatcher: XmlSaxBase {
     // Sorts the filters into the correct order for dispatching.
     // This also sets up the chains for each 'middle' filter.
     private func setFilterHandlers() {
+        print("setFilterHandlers")
         let middleFilters = spec!.filters["middle"]!
 
     }
 
     public override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        print("did end element dispatcher")
         spec!.writer.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
         super.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
     }
@@ -55,6 +57,7 @@ class AminMachineDispatcher: XmlSaxBase {
     }
 
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
+        print("found chars.")
         spec!.writer.parser(parser, foundCharacters: string)
     }
 }

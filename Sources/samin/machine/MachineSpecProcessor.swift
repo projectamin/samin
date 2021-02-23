@@ -1,7 +1,3 @@
-//
-// Created by swishy on 29/08/20.
-//
-
 import Foundation
 import FoundationXML
 
@@ -29,19 +25,19 @@ class MachineSpecProcessor: XmlSaxBase {
     public func parseMachineSpec() {
         print("machine spec start doc")
 
-        var machineSpecUrl = URL(string: getMachineSpecPath())!
+        let machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
 
-        var document = Document()
-        var include = XInclude()
+        let document = Document()
+        let include = XInclude()
         include.delegate = document
 
-        var fileHandle = FileHandle(forReadingAtPath: getMachineSpecPath())
+        let fileHandle = FileHandle(forReadingAtPath: getMachineSpecPath())
 
         if fileHandle != nil {
             let data = fileHandle?.readDataToEndOfFile()
             fileHandle?.closeFile()
-            var parser = XMLParser(data: data!)
+            let parser = XMLParser(data: data!)
             parser.delegate = include
             parser.parse()
 
@@ -52,25 +48,22 @@ class MachineSpecProcessor: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
-                    var createdClass = NSClassFromString("samin.\(key)")
+                    var createdClass: AnyClass? = NSClassFromString("samin.\(key)")
                     if(createdClass == nil) {
                         createdClass = NSClassFromString("saminTests.\(key)")
                     }
                     let typedInstance = createdClass as! XmlSaxBase.Type
                     let instance = typedInstance.init()
 
-                    if(instance == nil) {
-                        throw MachineSpecError.unableToLoadFilter(filter: key)
-                    }
                     switch(value.position) {
                     case "begin":
-                        self.machineSpec.filters["begin"]![value.name] = instance
+                        machineSpec.filters["begin"]![value.name] = instance
                     case "permanent":
-                        self.machineSpec.filters["permanent"]![value.name] = instance
+                        machineSpec.filters["permanent"]![value.name] = instance
                     case "middle":
-                        self.machineSpec.filters["middle"]![value.name] = instance
+                        machineSpec.filters["middle"]![value.name] = instance
                     case "end":
-                        self.machineSpec.filters["end"]![value.name] = instance
+                        machineSpec.filters["end"]![value.name] = instance
                     default:
                         throw MachineSpecError.invalidPosition
                     }

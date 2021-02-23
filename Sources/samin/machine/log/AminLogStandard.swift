@@ -1,14 +1,13 @@
-//
-// Created by swishy on 2/15/21.
-//
-
 import Foundation
 import FoundationXML
+import Inject
 
-class AminLogStandard: AminLog {
+struct AminLogStandard: AminLog {
 
     private var spec: Spec?
-    private var parser: XMLParser?
+
+    // Dummy parser to allow firing writer.
+    private var parser: XMLParser = XMLParser(data: Data(capacity: 0))
 
     func writeMessage(message: String, attributes: [String: String]) {
         driverStartElement(element: "amin:message", attributes: attributes)
@@ -48,15 +47,15 @@ class AminLogStandard: AminLog {
 
 
     func driverStartElement(element: String, attributes:[String: String]) {
-        spec?.writer.parser(parser!, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
+        spec?.writer.parser(parser, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
     }
 
     func driverEndElement(element: String) {
-        spec?.writer.parser(parser!, didEndElement: element, namespaceURI: nil, qualifiedName: nil)
+        spec?.writer.parser(parser, didEndElement: element, namespaceURI: nil, qualifiedName: nil)
     }
 
     func driverChars(characters: String) {
-        spec?.writer.parser(parser!, foundCharacters: characters)
+        spec?.writer.parser(parser, foundCharacters: characters)
     }
 
 }
