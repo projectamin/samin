@@ -1,9 +1,7 @@
-//
-// Created by swishy on 2/23/21.
-//
-
 import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
+#endif
 import Inject
 
 extension AutoWiredSingleton {
