@@ -43,6 +43,8 @@ public class Samin {
     }
 
     func parse(profileStream: InputStream) -> OutputStream {
+        
+        outputstream.schedule(in: RunLoop.main, forMode: RunLoop.Mode.default)
 
         // OK here we launch the parsing off into the sunset and return the stream immediately.
         let queue = DispatchQueue(label: "Amin Dispatch Queue")
@@ -50,7 +52,7 @@ public class Samin {
             // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
             // TODO to AminMachineDispatcher.
             // Make sure the output stream is open for writing.
-            outputstream.schedule(in: RunLoop.main, forMode: RunLoop.Mode.default)
+            
             outputstream.open()
 
             let machine = AminMachineDispatcher(machineSpec: Samin.spec!)

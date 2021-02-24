@@ -3,9 +3,9 @@ import XCTest
 
 final class saminTests: XCTestCase, StreamDelegate {
 
-    func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
+    func stream(_ stream: Stream, handle: Stream.Event) {
         print("STREAM EVENT")
-        print(eventCode)
+        print(handle)
     }
 
     func testCrankSamin() {
@@ -14,11 +14,12 @@ final class saminTests: XCTestCase, StreamDelegate {
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
         let output = amin.parse(profileStream: inputStream)
-        output.delegate = self
+
         while(output.streamStatus == .open) {
 
         }
         
+        assert(output.streamStatus == .closed)
     }
 
     func testEcho() {
@@ -31,18 +32,10 @@ final class saminTests: XCTestCase, StreamDelegate {
         output.delegate = self
         print(output.streamStatus)
 
-
-    }
-
-    func testArch() {
-        var amin = Samin()
-        var inputStream = InputStream(fileAtPath: "xml/arch.xml")!
-        amin.parse(profileStream: inputStream)
     }
 
     static var allTests = [
         ("testCrankSamin", testCrankSamin),
-        ("testEcho", testEcho),
-        ("testArch", testArch),
+        ("testEcho", testEcho)
     ]
 }
