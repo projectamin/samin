@@ -18,7 +18,7 @@ final class saminTests: XCTestCase, StreamDelegate {
         while(output.streamStatus == .open) {
 
         }
-        print("DONE")
+        
     }
 
     func testEcho() {
@@ -29,7 +29,6 @@ final class saminTests: XCTestCase, StreamDelegate {
         let output = amin.parse(profileStream: inputStream)
 
         output.delegate = self
-        output.open()
         print(output.streamStatus)
 
 

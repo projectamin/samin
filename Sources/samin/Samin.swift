@@ -8,8 +8,8 @@ public class Samin {
 
     // TODO Temporary to get going is equal to the Buffer in perl.
     let outputstream = OutputStream.toMemory()
-    var spec: Spec?
-    let log: AminLog = AminLogStandard()
+    static var spec: Spec?
+    let log: AminLog = AminLogStandard.shared
 
     init() {
         print("Amin - brought to you by the magic of dahuts everywhere.")
@@ -28,9 +28,10 @@ public class Samin {
         xinclude.delegate = machineSpecProcessor
         machineSpecProcessor.parseMachineSpec()
 
-        spec = machineSpecProcessor.machineSpec
+        Samin.spec = machineSpecProcessor.machineSpec
         print("Machine Spec Loaded!")
-        spec!.buffer = outputstream
+        // TODO Below is awful remove and do properly.
+        Samin.spec!.buffer = outputstream
     }
 
     func parse(profileUri: URL) {
@@ -49,9 +50,10 @@ public class Samin {
             // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
             // TODO to AminMachineDispatcher.
             // Make sure the output stream is open for writing.
+            outputstream.schedule(in: RunLoop.main, forMode: RunLoop.Mode.default)
             outputstream.open()
 
-            let machine = AminMachineDispatcher(machineSpec: spec!)
+            let machine = AminMachineDispatcher(machineSpec: Samin.spec!)
 
             // This is the core machine parser - should be the same instance available anywhere
             // within this machine chain. We create up front as log needs it currently.
@@ -65,6 +67,7 @@ public class Samin {
                 print("Parsing succeeded")
             } else {
                 print("Parsing failed.")
+                print(profileParser.parserError ?? "Unknown error")
             }
             // Close stream.
             outputstream.close()

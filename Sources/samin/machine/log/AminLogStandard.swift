@@ -4,8 +4,14 @@ import FoundationXML
 #endif
 
 struct AminLogStandard: AminLog {
-
-    private var spec: Spec?
+    
+    static let shared = AminLogStandard()
+    
+    private var spec = Samin.spec
+    
+    private init() {
+        
+    }
 
     // Dummy parser to allow firing writer.
     private var parser: XMLParser = XMLParser(data: Data(capacity: 0))
