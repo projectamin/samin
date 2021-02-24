@@ -1,6 +1,7 @@
 import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
-import Inject
+#endif
 
 class AminCommandMkdir: AminCommandBase {
 
@@ -10,3 +11,4 @@ class AminCommandMkdir: AminCommandBase {
         log.success(message: "We Did Start Making A Directory!")
     }
 }
+

@@ -3,7 +3,9 @@
 //
 
 import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
+#endif
 @testable import samin
 
 class AminWriterTest: XmlSaxBase {

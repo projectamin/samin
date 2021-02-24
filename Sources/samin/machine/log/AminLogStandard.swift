@@ -1,6 +1,7 @@
 import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
-import Inject
+#endif
 
 struct AminLogStandard: AminLog {
 
