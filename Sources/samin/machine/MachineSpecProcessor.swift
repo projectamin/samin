@@ -50,7 +50,9 @@ class MachineSpecProcessor: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
+                    print(key)
                     var createdClass: AnyClass? = NSClassFromString("samin.\(key)")
+                    print(createdClass)
                     if(createdClass == nil) {
                         createdClass = NSClassFromString("saminTests.\(key)")
                     }

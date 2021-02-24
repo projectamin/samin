@@ -11,7 +11,7 @@ public class Samin {
     static var spec: Spec?
     let log: AminLog = AminLogStandard.shared
 
-    init() {
+    public init() {
         print("Amin - brought to you by the magic of dahuts everywhere.")
 
         print("Initialising the Machine...")
@@ -42,18 +42,19 @@ public class Samin {
 
     }
 
-    func parse(profileStream: InputStream) -> OutputStream {
+    public func parse(profileStream: InputStream) -> OutputStream {
         
         outputstream.schedule(in: RunLoop.main, forMode: RunLoop.Mode.default)
+        
+        // Make sure the output stream is open for writing.
+        outputstream.open()
 
         // OK here we launch the parsing off into the sunset and return the stream immediately.
-        let queue = DispatchQueue(label: "Amin Dispatch Queue")
+        let queue = DispatchQueue.global(qos: .background)
         queue.async { [self] in
             // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
             // TODO to AminMachineDispatcher.
-            // Make sure the output stream is open for writing.
             
-            outputstream.open()
 
             let machine = AminMachineDispatcher(machineSpec: Samin.spec!)
 
