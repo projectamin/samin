@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
+#endif
 
 // This is reflective of Amin::Elt - just found the original naming confusing.
 class AminCommandBase: XmlSaxBase {

@@ -1,8 +1,10 @@
 //
 // Created by swishy on 29/08/20.
 //
-
+import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
+#endif
 
 class XInclude: XmlSaxBase {
 
