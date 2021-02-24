@@ -40,14 +40,13 @@ public class Samin {
 
     func parse(profileStream: InputStream) -> OutputStream {
 
-        // Make sure the output stream is open for writing.
-        outputstream.open()
-
         // OK here we launch the parsing off into the sunset and return the stream immediately.
         let queue = DispatchQueue(label: "Amin Dispatch Queue")
         queue.async { [self] in
             // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
             // TODO to AminMachineDispatcher.
+            // Make sure the output stream is open for writing.
+            outputstream.open()
 
             let machine = AminMachineDispatcher(machineSpec: spec!)
 
@@ -64,10 +63,8 @@ public class Samin {
             } else {
                 print("Parsing failed.")
             }
-            // Close stream back on main thread.
-            DispatchQueue.main.async {
-                outputstream.close()
-            }
+            // Close stream.
+            outputstream.close()
         }
         return outputstream
     }
