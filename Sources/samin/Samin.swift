@@ -6,8 +6,6 @@ import FoundationXML
 
 public class Samin {
 
-    // TODO Temporary to get going is equal to the Buffer in perl.
-    let outputstream = OutputStream.toMemory()
     static var spec: Spec?
     let log: AminLog = AminLogStandard.shared
 
@@ -30,8 +28,6 @@ public class Samin {
 
         Samin.spec = machineSpecProcessor.machineSpec
         print("Machine Spec Loaded!")
-        // TODO Below is awful remove and do properly.
-        Samin.spec!.buffer = outputstream
     }
 
     func parse(profileUri: URL) {
@@ -42,12 +38,13 @@ public class Samin {
 
     }
 
-    public func parse(profileStream: InputStream) -> OutputStream {
-        
-        outputstream.schedule(in: RunLoop.main, forMode: RunLoop.Mode.default)
+    public func parse(profileStream: InputStream, outputStream: OutputStream) {
+
+        // TODO Below is awful remove and do properly.
+        Samin.spec!.buffer = outputStream
         
         // Make sure the output stream is open for writing.
-        outputstream.open()
+        outputStream.open()
 
         // OK here we launch the parsing off into the sunset and return the stream immediately.
         let queue = DispatchQueue.global(qos: .background)
@@ -73,9 +70,11 @@ public class Samin {
                 print(profileParser.parserError ?? "Unknown error")
             }
             // Close stream.
-            outputstream.close()
+            while(outputStream.streamStatus == .writing) {
+                print("waiting for pending writes.")
+            }
+            outputStream.close()
         }
-        return outputstream
     }
 
     func parse(profileStream: InputStream, machineSpecification: InputStream) {

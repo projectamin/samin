@@ -1,6 +1,3 @@
-//
-// Created by swishy on 2/16/21.
-//
 import Foundation
 #if canImport(FoundationXML)
 import FoundationXML
@@ -46,9 +43,7 @@ class AminMachineHandlerWriter: XmlSaxBase {
         writeToOutputStream(data: xmlByteArray, length: xmlByteArray.count)
     }
 
-    // Marshall back to the main thread for updating the output stream
     private func writeToOutputStream(data: [UInt8], length: Int) {
-        print("Writing to outputstream: \(data)")
         _ = spec!.buffer!.write(data, maxLength:length)
     }
 }

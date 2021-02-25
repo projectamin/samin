@@ -7,8 +7,6 @@ struct AminLogStandard: AminLog {
     
     static let shared = AminLogStandard()
     
-    private var spec = Samin.spec
-    
     private init() {
         
     }
@@ -17,6 +15,7 @@ struct AminLogStandard: AminLog {
     private var parser: XMLParser = XMLParser(data: Data(capacity: 0))
 
     func writeMessage(message: String, attributes: [String: String]) {
+        print("LOG WRITE MESSAGE")
         driverStartElement(element: "amin:message", attributes: attributes)
         driverChars(characters: message)
         driverEndElement(element: "amin:message")
@@ -54,15 +53,15 @@ struct AminLogStandard: AminLog {
 
 
     func driverStartElement(element: String, attributes:[String: String]) {
-        spec?.writer.parser(parser, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
+        Samin.spec!.writer.parser(parser, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
     }
 
     func driverEndElement(element: String) {
-        spec?.writer.parser(parser, didEndElement: element, namespaceURI: nil, qualifiedName: nil)
+        Samin.spec!.writer.parser(parser, didEndElement: element, namespaceURI: nil, qualifiedName: nil)
     }
 
     func driverChars(characters: String) {
-        spec?.writer.parser(parser, foundCharacters: characters)
+        Samin.spec!.writer.parser(parser, foundCharacters: characters)
     }
 
 }
