@@ -15,6 +15,8 @@ class AminCommandBase: XmlSaxBase {
     private var commandName: String?
     private var attributes: String?
     private var environmentVariables = [String]()
+
+    // TODO need to check ELT.pm prefix/localname
     private var element: String?
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
@@ -32,10 +34,22 @@ class AminCommandBase: XmlSaxBase {
         // TODO Support debug.
 
         let task = Process()
+
+        let pipe = Pipe()
+        let outHandle = pipe.fileHandleForReading
+
+        outHandle.readabilityHandler = { pipe in
+            if let line = String(data: pipe.availableData, encoding: .utf8) {
+                // Define the placeholder as public, otherwise the Console obfuscate it
+                Samin.spec?.buffer?.write(line, maxLength: line.count)
+            }
+        }
+
+
         // task.launchPath
         // task.arguments =
         // task.environment = // array of var / value
         // task.standardError = // Pipe object - valid on iOS also...
-        // task.standardOutput = // Pipe object
+        task.standardOutput = outHandle
     }
 }
