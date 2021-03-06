@@ -15,7 +15,6 @@ struct AminLogStandard: AminLog {
     private var parser: XMLParser = XMLParser(data: Data(capacity: 0))
 
     func writeMessage(message: String, attributes: [String: String]) {
-        print("LOG WRITE MESSAGE")
         driverStartElement(element: "amin:message", attributes: attributes)
         driverChars(characters: message)
         driverEndElement(element: "amin:message")

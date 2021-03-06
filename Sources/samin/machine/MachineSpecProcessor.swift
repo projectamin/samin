@@ -25,9 +25,9 @@ class MachineSpecProcessor: XmlSaxBase {
 
     // TODO Allow passing machine spec url.
     public func parseMachineSpec() {
-        print("machine spec start doc")
 
         let machineSpecUrl = URL(string: getMachineSpecPath())!
+        print("Using Machine Spec: ")
         print(machineSpecUrl)
 
         let document = Document()
@@ -50,10 +50,9 @@ class MachineSpecProcessor: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
-                    print(key)
                     var createdClass: AnyClass? = NSClassFromString("samin.\(key)")
-                    print(createdClass)
                     if(createdClass == nil) {
+                        // TODO bandaid to keep tests happy atm - fix.
                         createdClass = NSClassFromString("saminTests.\(key)")
                     }
                     let typedInstance = createdClass as! XmlSaxBase.Type
@@ -71,7 +70,6 @@ class MachineSpecProcessor: XmlSaxBase {
                     default:
                         throw MachineSpecError.invalidPosition
                     }
-                    print(instance)
                 }
             } catch {
                 print("Error loading filters: \(error)")
@@ -82,10 +80,7 @@ class MachineSpecProcessor: XmlSaxBase {
             print("Permanent Filters Loaded: \(machineSpec.filters["permanent"]!.count)")
             print("Middle Filters Loaded: \(machineSpec.filters["middle"]!.count)")
             print("End Filters Loaded: \(machineSpec.filters["end"]!.count)")
-
-
         }
-
     }
 
     override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {

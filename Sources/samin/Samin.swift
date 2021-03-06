@@ -15,7 +15,7 @@ public class Samin {
         print("Initialising the Machine...")
 
         // Setup dependency graph.
-        SaminDependencies.singletons.add(AminLog.self, using: self.log)
+        // SaminDependencies.singletons.add(AminLog.self, using: log)
 
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
@@ -39,16 +39,15 @@ public class Samin {
     }
 
     public func parse(profileStream: InputStream, outputStream: OutputStream) {
-
         // TODO Below is awful remove and do properly.
         Samin.spec!.buffer = outputStream
-        
+
         // Make sure the output stream is open for writing.
         outputStream.open()
 
         // OK here we launch the parsing off into the sunset and return the stream immediately.
         let queue = DispatchQueue.global(qos: .background)
-        queue.async { [self] in
+        queue.async {
             // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
             // TODO to AminMachineDispatcher.
             

@@ -39,7 +39,6 @@ class AminMachineDispatcher: XmlSaxBase {
         if(elementName == "amin:command") {
             let middleFilters = spec!.filters["middle"]!
             let filterName = attributeDict["name"]!
-            print(filterName)
             currentFilter = middleFilters[filterName]!
         }
         currentFilter?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
