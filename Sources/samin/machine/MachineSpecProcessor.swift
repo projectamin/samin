@@ -55,6 +55,11 @@ class MachineSpecProcessor: XmlSaxBase {
                         // TODO bandaid to keep tests happy atm - fix.
                         createdClass = NSClassFromString("saminTests.\(key)")
                     }
+                    if(createdClass == nil) {
+                        parser.abortParsing()
+                        machineSpec.error = MachineSpecError.unableToLoadFilter(filter: key)
+                        throw machineSpec.error!
+                    }
                     let typedInstance = createdClass as! XmlSaxBase.Type
                     let instance = typedInstance.init()
 
@@ -68,11 +73,13 @@ class MachineSpecProcessor: XmlSaxBase {
                     case "end":
                         machineSpec.filters["end"]![value.name] = instance
                     default:
-                        throw MachineSpecError.invalidPosition
+                        machineSpec.error = MachineSpecError.invalidPosition
+                        throw machineSpec.error!
                     }
                 }
             } catch {
                 print("Error loading filters: \(error)")
+                return
             }
 
 

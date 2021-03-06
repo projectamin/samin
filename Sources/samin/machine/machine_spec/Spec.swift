@@ -25,6 +25,8 @@ public class Spec {
 
     var buffer: OutputStream? = nil
 
+    var error: MachineSpecError? = nil
+
     init() {
         // TODO Make dynamic?
         filters["begin"] = Dictionary<String, XmlSaxBase>()

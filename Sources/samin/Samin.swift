@@ -12,7 +12,6 @@ public class Samin {
 
     public init() {
         print("Amin - brought to you by the magic of dahuts everywhere.")
-
         print("Initialising the Machine...")
 
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
@@ -26,6 +25,7 @@ public class Samin {
 
         Samin.spec = machineSpecProcessor.machineSpec
         print("Machine Spec Loaded!")
+
     }
 
     func parse(profileUri: URL, outputStream: OutputStream) {
@@ -38,6 +38,17 @@ public class Samin {
     }
 
     public func parse(profileStream: InputStream, outputStream: OutputStream) {
+
+        if(Samin.spec!.error != nil) {
+            print("Machine Spec load has error")
+            print(Samin.spec!.error)
+            print("Stopping processing.")
+            // Close stream.
+            outputStream.close()
+            delegate?.profileCompleted()
+            return
+        }
+
         // TODO Below is awful remove and do properly.
         Samin.spec!.buffer = outputStream
 
