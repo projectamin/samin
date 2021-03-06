@@ -7,6 +7,7 @@ import FoundationXML
 public class Samin {
 
     static var spec: Spec?
+    public var delegate: SaminDelegate?
     let log: AminLog = AminLogStandard.shared
 
     public init() {
@@ -47,7 +48,7 @@ public class Samin {
 
         // OK here we launch the parsing off into the sunset and return the stream immediately.
         let queue = DispatchQueue.global(qos: .background)
-        queue.async {
+        queue.async { [self] in
             // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
             // TODO to AminMachineDispatcher.
             
@@ -68,11 +69,13 @@ public class Samin {
                 print("Parsing failed.")
                 print(profileParser.parserError ?? "Unknown error")
             }
-            // Close stream.
+            // Make sure we have no pending writes.
             while(outputStream.streamStatus == .writing) {
                 print("waiting for pending writes.")
             }
+            // Close stream.
             outputStream.close()
+            delegate?.profileCompleted()
         }
     }
 

@@ -2,11 +2,16 @@ import Foundation
 import samin
 import NIO
 
-class SaminCli: NSObject, StreamDelegate {
+class SaminCli: NSObject, StreamDelegate, SaminDelegate {
 
     // Write output to stdout as we go so we can pipe amin to other things.
     let stdout = FileHandle.standardOutput
     let maxReadLength = 4096
+
+    func profileCompleted() {
+        print("Completed Exiting Amin")
+        exit(EXIT_SUCCESS)
+    }
 
     public func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
 
@@ -25,6 +30,9 @@ class SaminCli: NSObject, StreamDelegate {
     func main() {
         print("SAmin cause well.. 42")
 
+        // Since we are a commandline app we need to manage our own runloop
+        let aminRunloop = RunLoop.current
+
         // Setup bound stream pair so when the outputstream written to within the Amin machine
         // recieves data we get it fed to us via the input stream.
         var xmlStream : InputStream?
@@ -34,23 +42,20 @@ class SaminCli: NSObject, StreamDelegate {
         CFStreamCreateBoundPair(kCFAllocatorDefault, &readStream, &writeStream, 1024)
         xmlStream = readStream!.takeUnretainedValue()
         xmlStream!.delegate = self
-        xmlStream!.schedule(in: RunLoop.current, forMode: RunLoop.Mode.default)
+        xmlStream!.schedule(in: aminRunloop, forMode: RunLoop.Mode.default)
         xmlStream!.open()
         outputStream = writeStream!.takeUnretainedValue()
-        var continueExecution = true
+        let amin = Samin()
+        amin.delegate = self
         DispatchQueue.main.async {
-            let amin = Samin()
             let profile = "<amin:command name='mkdir' xmlns:amin='http://projectamin.org/ns/'>\n\t<amin:flag name='m'>0755</amin:flag>\n\t<amin:param name=\"target\">/tmp/test_ashell</amin:param>\n</amin:command>"
             let data = profile.data(using: .utf8)
             let inputStream = InputStream(data: data!)
             amin.parse(profileStream: inputStream, outputStream: outputStream!)
-            print("Profile processed")
-            continueExecution = false
         }
 
-        while(continueExecution) {
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 1.0))
-        }
+        // Kick off runloop.
+        RunLoop.current.run()
     }
 
     private func readAvailableBytes(stream: InputStream) {
