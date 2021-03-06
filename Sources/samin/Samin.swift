@@ -63,12 +63,11 @@ public class Samin {
             // Set the Amin machine as the default handler.
             profileParser.delegate = machine
             let success = profileParser.parse()
-            if(success) {
-                print("Parsing succeeded")
-            } else {
+            if(!success) {
                 print("Parsing failed.")
                 print(profileParser.parserError ?? "Unknown error")
             }
+
             // Make sure we have no pending writes.
             while(outputStream.streamStatus == .writing) {
                 print("waiting for pending writes.")

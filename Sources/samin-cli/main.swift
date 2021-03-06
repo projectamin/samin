@@ -34,27 +34,41 @@ class SaminCli: NSObject, StreamDelegate, SaminDelegate {
         let aminRunloop = RunLoop.current
 
         // Setup bound stream pair so when the outputstream written to within the Amin machine
-        // recieves data we get it fed to us via the input stream.
+        // receives data we get it fed to us via the input stream.
         var xmlStream : InputStream?
         var outputStream : OutputStream?
         var readStream : Unmanaged<CFReadStream>?
         var writeStream : Unmanaged<CFWriteStream>?
+
+        // As this is intended to be purely the amin CLI frontend we bind to memory
+        // rather than a socket.
         CFStreamCreateBoundPair(kCFAllocatorDefault, &readStream, &writeStream, 1024)
+
+        // This is an inputstream that gets data when the outputstream passed to the amin
+        // machine is written too. It gets fed chunked data so we wire up a delegate to fed
+        // data to stdout as it comes in.
         xmlStream = readStream!.takeUnretainedValue()
         xmlStream!.delegate = self
         xmlStream!.schedule(in: aminRunloop, forMode: RunLoop.Mode.default)
         xmlStream!.open()
+
+        // This gets passed to the Amin core to allow it to be used within the machine.
+        // Amin internally is stream based to allow us to bolt it behind http/tcp/websockets
+        // and any other type of transport you feel the need to.
         outputStream = writeStream!.takeUnretainedValue()
         let amin = Samin()
         amin.delegate = self
-        DispatchQueue.main.async {
-            let profile = "<amin:command name='mkdir' xmlns:amin='http://projectamin.org/ns/'>\n\t<amin:flag name='m'>0755</amin:flag>\n\t<amin:param name=\"target\">/tmp/test_ashell</amin:param>\n</amin:command>"
-            let data = profile.data(using: .utf8)
-            let inputStream = InputStream(data: data!)
-            amin.parse(profileStream: inputStream, outputStream: outputStream!)
-        }
+        let profile = "<amin:command name='mkdir' xmlns:amin='http://projectamin.org/ns/'>\n\t<amin:flag name='m'>0755</amin:flag>\n\t<amin:param name=\"target\">/tmp/test_ashell</amin:param>\n</amin:command>"
+        let data = profile.data(using: .utf8)
+        let inputStream = InputStream(data: data!)
 
-        // Kick off runloop.
+        // We can kick things of here within the current process -
+        // Amin internally dispatches XML parsing via GCD in the background.
+        // The delegate method profileCompleted is called when the machine has
+        // finished executing the profile and it handles exiting the current runloop.
+        amin.parse(profileStream: inputStream, outputStream: outputStream!)
+
+        // Lets kick things off!
         RunLoop.current.run()
     }
 
