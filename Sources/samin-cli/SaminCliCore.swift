@@ -27,7 +27,11 @@ class SaminCliCore: NSObject, StreamDelegate, SaminDelegate {
     }
 
     func processStream(inputStream: InputStream) {
-        print("SAmin cause well.. 42")
+
+        // Make sure our input stream is actually open for reading.
+        if(inputStream.streamStatus != .open) {
+            inputStream.open()
+        }
 
         // Since we are a commandline app we need to manage our own runloop
         let aminRunloop = RunLoop.current
@@ -55,6 +59,8 @@ class SaminCliCore: NSObject, StreamDelegate, SaminDelegate {
         // Amin internally is stream based to allow us to bolt it behind http/tcp/websockets
         // and any other type of transport you feel the need to.
         outputStream = writeStream!.takeUnretainedValue()
+
+        // Passing things off to the Amin core for processing.
         let amin = Samin()
         amin.delegate = self
 

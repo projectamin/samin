@@ -16,10 +16,10 @@ struct SaminCli: ParsableCommand {
             help: "Process a profile from STDIN") var profile = false
 
     func run() {
+        print("SAmin cause well.. 42")
         if(uri != nil) {
-            print("PARSING URI:\(uri!)")
+            print("Processing URI: \(uri!)")
             let url = URL(string: uri!)
-            print(url)
             let scheme = url?.scheme
             if(scheme == nil) {
                 print("URI must contain a scheme: http:// file:// etc.")

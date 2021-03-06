@@ -15,9 +15,6 @@ public class Samin {
 
         print("Initialising the Machine...")
 
-        // Setup dependency graph.
-        // SaminDependencies.singletons.add(AminLog.self, using: log)
-
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
         let machineSpecProcessor = MachineSpecProcessor()
@@ -31,8 +28,9 @@ public class Samin {
         print("Machine Spec Loaded!")
     }
 
-    func parse(profileUri: URL) {
-        // TODO Generate input stream from URL/URI and call inputstream overload.
+    func parse(profileUri: URL, outputStream: OutputStream) {
+        let stream = InputStream(url: profileUri)
+        parse(profileStream: stream!, outputStream: outputStream)
     }
 
     func parse(profileUri: URL, machineSpecification: URL) {
@@ -57,7 +55,6 @@ public class Samin {
 
             // This is the core machine parser - should be the same instance available anywhere
             // within this machine chain. We create up front as log needs it currently.
-            // TODO Inject later?
             let profileParser = XMLParser(stream: profileStream)
 
             // Set the Amin machine as the default handler.
@@ -78,7 +75,7 @@ public class Samin {
         }
     }
 
-    func parse(profileStream: InputStream, machineSpecification: InputStream) {
+    func parse(profileStream: InputStream, machineSpecification: InputStream, outputStream: OutputStream) {
 
     }
 
