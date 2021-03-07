@@ -18,10 +18,14 @@ public class Samin {
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
         let machineSpecProcessor = MachineSpecProcessor()
 
-        // TODO manage xinclude.
         let xinclude = XInclude()
         xinclude.delegate = machineSpecProcessor
-        machineSpecProcessor.parseMachineSpec()
+        // TODO handle within MachineSpecProcessor.
+        do {
+            try machineSpecProcessor.parseMachineSpec()
+        } catch {
+            machineSpecProcessor.machineSpec.error = .failedToLoadMachineSpec
+        }
 
         Samin.spec = machineSpecProcessor.machineSpec
         print("Machine Spec Loaded!")
