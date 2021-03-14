@@ -6,22 +6,40 @@ import FoundationXML
 // This is reflective of Amin::Elt - just found the original naming confusing.
 class AminCommandBase: XmlSaxBase {
 
-    private var directory: String?
-    private var target: String?
-    private var flags = [String]()
-    private var source = [String]()
-    private var parameters = [String]()
-    private var command: String?
-    private var commandName: String?
-    private var attributes: String?
-    private var environmentVariables = [String]()
+    var directory: String?
+    var target: String?
+    var flags = [String]()
+    var source = [String]()
+    var parameters = [String]()
+    var command: String?
+    // TODO not sure this is needed.
+    var commandName: String?
+    var attributes: [String: String] = [:]
+    var environmentVariables: [String: String] = [:]
+    // TODO making an assumption here that this should be immutable.
+    // TODO amin:command filter is only ever dealing with amin:command based elements?
+    // TODO Perl implementation had the ability for command filters to override.
+    // TODO Here we just sandwich 'prefix' and 'localname'
+    var localName = "amin:command"
+    var element: String?
 
-    // TODO need to check ELT.pm prefix/localname
-    private var element: String?
+    // Regexp used during parsing.
+    let paramRegex = try? NSRegularExpression(pattern: "([\\*\\+\\.\\w=\\/-]+|'[^']+')\\s*", options: .caseInsensitive)
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         print("AminCommandBase start element")
-        print(attributeDict)
+        print(elementName)
+        print(namespaceURI)
+        print(qName)
+        if(elementName == localName) {
+            if(attributeDict.keys.contains("name")) {
+                command = attributeDict["name"]
+            }
+            print(attributeDict)
+        }
+        element = elementName
+        attributes = attributeDict
+        super.parser(_: parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
     }
 
 
@@ -35,21 +53,39 @@ class AminCommandBase: XmlSaxBase {
 
         let task = Process()
 
-        let pipe = Pipe()
-        let outHandle = pipe.fileHandleForReading
+        let messagePipe = Pipe()
+        let outHandle = messagePipe.fileHandleForReading
 
         outHandle.readabilityHandler = { pipe in
             if let line = String(data: pipe.availableData, encoding: .utf8) {
                 // Define the placeholder as public, otherwise the Console obfuscate it
-                Samin.spec?.buffer?.write(line, maxLength: line.count)
+                // TODO Amin log should be passed or accessible elsewhere not directly referenced
+                // TODO as it is an implemented interface.
+                AminLogStandard.shared.aminOut(message: line)
             }
         }
 
+        let errorPipe = Pipe()
+        let errorHandle = errorPipe.fileHandleForReading
+        errorHandle.readabilityHandler = { pipe in
+            if let line = String(data: pipe.availableData, encoding: .utf8) {
+                AminLogStandard.shared.aminError(message: line)
+            }
+        }
 
-        // task.launchPath
-        // task.arguments =
-        // task.environment = // array of var / value
-        // task.standardError = // Pipe object - valid on iOS also...
+        task.launchPath = command
+        task.arguments = parameters
+        //task.environment = environmentVariables
+        task.standardError = errorHandle
         task.standardOutput = outHandle
+    }
+
+    func charactersShell(data: String) {
+        if(element == "amin:shell") {
+            directory = data
+        }
+        if(element == "amin:env") {
+            // TODO environmentVariables = data
+        }
     }
 }
