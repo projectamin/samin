@@ -16,14 +16,15 @@ class AminCommandMkdir: AminCommandBase {
         if(commandName == command) {
             if(element == "amin:param") {
                 print(element)
-                let params = paramRegex?.matches(in: string, range: NSRange(location: 0, length: string.count))
-                params?.forEach { result in
-                    print(result)
+                if let range = string.range(of: paramRegex, options: .regularExpression) {
+                    print(string[range])
+                } else {
+                    print("No params")
                 }
             }
             charactersShell(data: string)
             if(element == "amin:flag") {
-                print(element)
+                print("Flag: \(element)")
             }
         } else {
             super.parser(_: parser, foundCharacters: string)
@@ -34,6 +35,7 @@ class AminCommandMkdir: AminCommandBase {
         if(elementName == localName && command == commandName) {
             launchCommand()
         }
+        super.parser(_: parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
     }
 }
 

@@ -24,7 +24,7 @@ class AminCommandBase: XmlSaxBase {
     var element: String?
 
     // Regexp used during parsing.
-    let paramRegex = try? NSRegularExpression(pattern: "([\\*\\+\\.\\w=\\/-]+|'[^']+')\\s*", options: .caseInsensitive)
+    let paramRegex = "([\\*\\+\\.\\w=\\/-]+|'[^']+')\\s*"
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         print("AminCommandBase start element")
