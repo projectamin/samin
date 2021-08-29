@@ -14,7 +14,7 @@ This will pull the toolchain into a temporary location and compile samin.
 
 If you wish to do so using standard swift tooling - after setting up your toolchain via the above link you can run the following in the project root. 
 
-`swift-build`
+`swift build`
 
 
 
