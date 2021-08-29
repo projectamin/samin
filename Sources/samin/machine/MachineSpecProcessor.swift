@@ -38,7 +38,7 @@ class MachineSpecProcessor: XmlSaxBase {
         var include = XInclude()
         include.delegate = document
 
-        var fileHandle = FileHandle(forReadingAtPath: getMachineSpecPath())
+        var fileHandle = FileHandle(forReadingAtPath: machineSpecUrl.absoluteString)
 
         if fileHandle != nil {
             let data = fileHandle?.readDataToEndOfFile()
