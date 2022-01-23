@@ -48,6 +48,6 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
     // Marshall back to the main thread for updating the output stream
     private func writeToOutputStream(data: [UInt8], length: Int) {
-        _ = spec!.buffer!.write(data, maxLength:length)
+        spec!.buffer!.write(data, maxLength: length)
     }
 }

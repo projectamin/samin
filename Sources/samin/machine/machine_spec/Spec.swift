@@ -18,7 +18,7 @@ public class Spec {
     var generator: String? = nil
     //
     var handler: String? = nil
-    var log: AminLog? = nil
+    var log: AminLog? = AminLogStandard()
     // This maps filters to position keyed by name.
     var filters = Dictionary<String, Dictionary<String, XmlSaxBase>>()
     let writer = AminMachineHandlerWriter()

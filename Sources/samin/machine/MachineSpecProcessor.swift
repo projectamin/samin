@@ -13,7 +13,7 @@ class MachineSpecProcessor: XmlSaxBase {
 
     // TODO make this pluggable so we can pull from NSBundle on iOS
     func getMachineSpecPath() -> String {
-        let fileManager = FileManager()
+        let fileManager = FileManager.default
         if let home = ProcessInfo.processInfo.environment["HOME"] {
             if(fileManager.fileExists(atPath: home + "/.amin/machine_spec.xml")) {
                 return home + "/.amin/machine_spec.xml"
@@ -29,22 +29,23 @@ class MachineSpecProcessor: XmlSaxBase {
 
     // TODO Allow passing machine spec url.
     public func parseMachineSpec() {
-        print("machine spec start doc")
+        print("parseMahineSpec")
 
-        var machineSpecUrl = URL(string: getMachineSpecPath())!
+        let machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
 
-        var document = Document()
-        var include = XInclude()
+        let document = Document()
+        let include = XInclude()
         include.delegate = document
 
-        var fileHandle = FileHandle(forReadingAtPath: machineSpecUrl.absoluteString)
+        let fileHandle = FileHandle(forReadingAtPath: machineSpecUrl.absoluteString)
 
         if fileHandle != nil {
             let data = fileHandle?.readDataToEndOfFile()
             fileHandle?.closeFile()
-            var parser = XMLParser(data: data!)
+            let parser = XMLParser(data: data!)
             parser.delegate = include
+            print("Parsing machine spec.")
             parser.parse()
 
             // Here we attempt to load and sort filters into correct position.

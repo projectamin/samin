@@ -12,6 +12,7 @@ class AminMachineDispatcher: XmlSaxBase {
     init(machineSpec: Spec!) {
         super.init()
         spec = machineSpec
+        spec?.log?.success(message: "AMIN SPEC ASSIGNED")
     }
 
     // Sorts the filters into the correct order for dispatching.

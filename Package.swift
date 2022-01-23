@@ -10,10 +10,11 @@ let package = Package(
         .library(
             name: "samin",
             targets: ["samin"]),
+        .executable(name: "samin-cli", targets: ["samin-cli"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -21,6 +22,9 @@ let package = Package(
         .target(
             name: "samin",
             dependencies: []),
+        .target(
+                name: "samin-cli",
+                dependencies: ["samin", .product(name: "ArgumentParser", package: "swift-argument-parser")]),
         .testTarget(
             name: "saminTests",
             dependencies: ["samin"]),
