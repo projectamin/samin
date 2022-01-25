@@ -24,6 +24,7 @@ class AminMachineDispatcher: XmlSaxBase {
 
     public override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         spec!.writer.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
+        print("Dispatcher - didEndElement")
         super.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
     }
 
@@ -58,6 +59,7 @@ class AminMachineDispatcher: XmlSaxBase {
     }
 
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
+        print("Dispatcher - foundCharacters")
         spec!.writer.parser(parser, foundCharacters: string)
     }
 }

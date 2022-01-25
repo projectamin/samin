@@ -18,10 +18,11 @@ class AminMachineHandlerWriter: XmlSaxBase {
     }
 
     override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String: String]) {
+        print("AminHandlerWriter - startElement")
         var startElement = "<"
         startElement += elementName
 
-        // TODO deal with namespace. Refactor into common write functions.
+        // TODO deal with namespace.
         if ((attributeDict.count) != 0) {
             attributeDict.forEach { attribute in
                 startElement += " \(attribute.key)=\"\(attribute.value)\""
@@ -30,24 +31,24 @@ class AminMachineHandlerWriter: XmlSaxBase {
 
         startElement += ">"
 
-        let xmlByteArray = [UInt8](startElement.utf8)
-
-        writeToOutputStream(data: xmlByteArray, length: xmlByteArray.count)
+        writeToOutputStream(data: startElement)
     }
 
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
-        let charactersArray = [UInt8](string.utf8)
-        writeToOutputStream(data: charactersArray, length: charactersArray.count)
+        writeToOutputStream(data: string)
     }
 
     override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         let endElement = "</\(elementName)>"
-        let xmlByteArray = [UInt8](endElement.utf8)
-        writeToOutputStream(data: xmlByteArray, length: xmlByteArray.count)
+        writeToOutputStream(data: endElement)
     }
 
     // Marshall back to the main thread for updating the output stream
-    private func writeToOutputStream(data: [UInt8], length: Int) {
-        spec!.buffer!.write(data, maxLength: length)
+    private func writeToOutputStream(data: String) {
+        do {
+            try spec!.buffer!.write(data)
+        } catch {
+            spec?.log?.aminError(message: "Unable to write data to output stream")
+        }
     }
 }

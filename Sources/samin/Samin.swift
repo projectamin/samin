@@ -16,8 +16,12 @@ public class Samin {
         // TODO Generate input stream from URL/URI and call inputstream overload.
         if(profileUri.isFileURL) {
             let inputStream = InputStream(fileAtPath: profileUri.absoluteString)
-            inputStream?.open()
-            let outputStream = OutputStream()
+            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: true) else {
+                print("Unable to access stdout")
+                return
+            }
+            outputStream.schedule(in: .main, forMode: .common)
+            outputStream.open()
             parse(profileStream: inputStream!, outputStream: outputStream)
         } else {
             // handle HTTP
@@ -62,11 +66,15 @@ public class Samin {
 
         let machine = AminMachineDispatcher(machineSpec: spec)
 
+        print("Dispatcher created.")
+
         // This is the core machine parser.
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine
 
+        print("About to parse!")
         profileParser.parse()
+        print("Parsing completed.")
     }
 
     func parse(profileStream: InputStream, machineSpecification: InputStream) {

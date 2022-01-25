@@ -13,15 +13,24 @@ struct SaminCli: ParsableCommand {
         print("Processing profile via stdin?")
         print(profile)
         if(profile) {
-            let inputStream = InputStream(fileAtPath: "/dev/stdin")
-            inputStream?.open()
+            guard let inputStream = InputStream(fileAtPath: "/dev/stdin") else {
+                print("Unable to access stdin")
+                return
+            }
+            inputStream.open()
             let amin = Samin()
-            let outputStream = OutputStream()
-            amin.parse(profileStream: inputStream!, outputStream: outputStream)
+            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: true) else {
+                print("Unable to access stdout")
+                return
+            }
+            outputStream.schedule(in: .main, forMode: .default)
+            outputStream.open()
+            amin.parse(profileStream: inputStream, outputStream: outputStream)
         }
         if(uri != nil) {
             let amin = Samin()
             let url = URL(string: uri!)
+            print("Processing URL")
             amin.parse(profileUri: url!)
         }
     }
