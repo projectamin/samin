@@ -12,7 +12,6 @@ class AminMachineDispatcher: XmlSaxBase {
     init(machineSpec: Spec!) {
         super.init()
         spec = machineSpec
-        spec?.log?.success(message: "AMIN SPEC ASSIGNED")
     }
 
     // Sorts the filters into the correct order for dispatching.
@@ -30,6 +29,7 @@ class AminMachineDispatcher: XmlSaxBase {
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         print("did start element dispatcher")
+        spec?.log?.success(message: "Dispatcher start called!!")
         spec!.writer.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
 
         // TODO Check spec for error.

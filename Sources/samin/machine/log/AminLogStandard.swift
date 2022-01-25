@@ -51,6 +51,7 @@ class AminLogStandard: AminLog {
 
 
     func driverStartElement(element: String, attributes:[String: String]) {
+        print(element)
         spec?.writer.parser(parser!, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
     }
 

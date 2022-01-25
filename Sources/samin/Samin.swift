@@ -15,14 +15,20 @@ public class Samin {
     public func parse(profileUri: URL) {
         // TODO Generate input stream from URL/URI and call inputstream overload.
         if(profileUri.isFileURL) {
-            let inputStream = InputStream(fileAtPath: profileUri.absoluteString)
+            print(profileUri)
+            guard let inputStream = InputStream(fileAtPath: "/\(profileUri.host!)\(profileUri.relativePath)") else {
+                print("Unable to access file: \(profileUri.absoluteString)")
+                return
+            }
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: true) else {
                 print("Unable to access stdout")
                 return
             }
+            inputStream.schedule(in: .main, forMode: .common)
             outputStream.schedule(in: .main, forMode: .common)
+            inputStream.open()
             outputStream.open()
-            parse(profileStream: inputStream!, outputStream: outputStream)
+            parse(profileStream: inputStream, outputStream: outputStream)
         } else {
             // handle HTTP
             print("HTTP URL not yet supported.")
