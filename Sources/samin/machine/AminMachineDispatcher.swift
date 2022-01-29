@@ -47,7 +47,9 @@ class AminMachineDispatcher: XmlSaxBase {
             let filterName = attributeDict["name"]!
             print(filterName)
             let filter: XmlSaxBase = middleFilters[filterName]!
+            // TODO even more crap this needs to be fixed.
             delegate = filter
+            filter.spec = spec
             delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
         } else {
             print("Dispatcher delegating")

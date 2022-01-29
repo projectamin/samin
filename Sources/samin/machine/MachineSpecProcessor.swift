@@ -29,7 +29,7 @@ class MachineSpecProcessor: XmlSaxBase {
 
     // TODO Allow passing machine spec url.
     public func parseMachineSpec() {
-        print("parseMahineSpec")
+        print("parseMachineSpec")
 
         let machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
@@ -55,9 +55,9 @@ class MachineSpecProcessor: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
-                    var createdClass = NSClassFromString("samin.\(key)")
-                    if(createdClass == nil) {
-                        createdClass = NSClassFromString("saminTests.\(key)")
+                    guard let createdClass = NSClassFromString("samin.\(key)") else {
+                        print("Unable to create instance of filter \(key)")
+                        throw MachineSpecError.unableToLoadFilter(filter: key)
                     }
                     let typedInstance = createdClass as! XmlSaxBase.Type
                     let instance = typedInstance.init()
