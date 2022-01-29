@@ -22,8 +22,12 @@ public class Spec {
     // This maps filters to position keyed by name.
     var filters = Dictionary<String, Dictionary<String, XmlSaxBase>>()
     let writer = AminMachineHandlerWriter()
-
     var buffer: OutputStream? = nil
+
+    // In perl land these two are updated to track the current element.
+    // Not sure I'm happy about this but following suite atm to keep things easy.
+    var prefix: String? = nil
+    var localname: String? = nil
 
     init() {
         // TODO Make dynamic?
