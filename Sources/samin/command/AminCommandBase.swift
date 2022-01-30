@@ -31,12 +31,14 @@ class AminCommandBase: XmlSaxBase {
                 command = element.localName
             }
         }
+        self.element = elementName
         super.parser(_: parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
     }
 
 
     func commandMessage() {
         // TODO Dumps success message  / OUT / Error to Log.
+
     }
 
     func launchCommand() {

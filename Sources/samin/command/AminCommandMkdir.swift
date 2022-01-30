@@ -19,8 +19,26 @@ class AminCommandMkdir: AminCommandBase {
     }
 
     public override func parser(_ parser: XMLParser, foundCharacters string: String) {
+        if(command == commandName) {
+            let localname = getElement(fullElement: element!).localName
+            if(localname == "param") {
+                let pattern = #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#
+                do {
+                    let regex = try NSRegularExpression(pattern: pattern, options: [])
+                    let range = NSRange(description.startIndex..<description.endIndex,
+                            in: description)
+                    regex.enumerateMatches(in: description,
+                            options: [],
+                            range: range) { (match, _, stop) in
+                        guard let match = match else { return }
 
-        if(string != nil && command == commandName) {
+                        print(match)
+                    }
+                } catch {
+                    print("Error parsing params.")
+                    spec?.log?.aminError(message: "Failed to parse params.")
+                }
+            }
 
 
         } else {
