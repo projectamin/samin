@@ -13,7 +13,7 @@ class AminCommandBase: XmlSaxBase {
     public var parameters = [String]()
     public var command: String?
     public var commandName: String?
-    public var attributes: String?
+    public var attributes: [String : String]?
     public var environmentVariables = [String: String]()
     public var element: String?
 
@@ -21,6 +21,7 @@ class AminCommandBase: XmlSaxBase {
         print("AminCommandBase start element")
         let prefix = spec?.prefix ?? ""
         let localName = spec?.localname ?? ""
+        attributes = attributeDict
         let element = getElement(fullElement: elementName)
         // We double check the current prefix/localname to prevent for example amin::mkdir being executed
         // instead of my_corp::mkdir
@@ -47,8 +48,8 @@ class AminCommandBase: XmlSaxBase {
         let pipe = Pipe()
         let task = Process()
         task.environment = environmentVariables
-        task.launchPath = command
-        task.arguments = parameters
+        task.launchPath = "/usr/bin/env"
+        task.arguments = ["bash", "-c", "\(command!)"]
         task.standardError = pipe
         task.standardOutput = pipe
         task.launch()
