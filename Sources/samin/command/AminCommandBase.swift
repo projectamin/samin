@@ -7,7 +7,6 @@ import FoundationXML
 class AminCommandBase: XmlSaxBase {
 
     public var directory: String?
-    public var target: String?
     public var flags = [String]()
     public var source = [String]()
     public var parameters = [String]()
@@ -56,29 +55,42 @@ class AminCommandBase: XmlSaxBase {
         }
     }
 
-    func launchCommand() {
+    func launchCommand() -> CommandResult {
 
         var arguments = ["\(command!)"]
         arguments.append(contentsOf: flags)
         arguments.append(contentsOf: parameters)
 
         // TODO Support debug.
-        let pipe = Pipe()
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
         let task = Process()
         task.environment = environmentVariables
         task.launchPath = "/usr/bin/env"
         task.arguments = arguments
-        task.standardError = pipe
-        task.standardOutput = pipe
+        task.standardError = errorPipe
+        task.standardOutput = outputPipe
         task.launch()
         task.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: String.Encoding.utf8)
-        print("COMMAND: \(command!) OUTPUT: \(output!)")
-        print(task.terminationStatus)
-        if (task.terminationStatus == 0) {
-
+        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: outputData, encoding: String.Encoding.utf8)
+        let error = String(data: errorData, encoding: String.Encoding.utf8)
+        let result = CommandResult()
+        result.out = output
+        result.error = error
+        result.status = task.terminationStatus
+        if (error != nil && output != nil) {
+            result.type = CommandType.both
+        } else if (error == nil && output != nil) {
+            result.type = CommandType.out
+        } else if (error != nil && output == nil) {
+            result.type = CommandType.error
+        } else {
+            // This is for commands like mkdir which dont return anything on success.
+            result.type = CommandType.out
         }
-        // TODO this needs to return CommandType value.
+
+        return result
     }
 }

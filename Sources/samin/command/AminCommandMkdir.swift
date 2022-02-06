@@ -12,6 +12,7 @@ class AminCommandMkdir: AminCommandBase {
     private let prefix = "amin"
     private let localName = "command"
     private var mode: String?;
+    public var target: String?
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         print("mkdir filter start element")
@@ -31,6 +32,9 @@ class AminCommandMkdir: AminCommandBase {
             case "flag":
                 processFlag(characters: string)
                 break;
+            case "target":
+                target = string
+                break
             default:
                 print("unhandled element.")
             }
@@ -48,8 +52,34 @@ class AminCommandMkdir: AminCommandBase {
                 flags.append(modeFlags[0])
                 flags.append(mode)
             }
-            launchCommand()
+            let result = launchCommand()
+
+            // Check directory exists as belts and braces.
+            var successMessage = ""
+            if (directory != nil && checkDirectoryExists(path: directory!)) {
+                successMessage += "Created directory \(target) in \(directory) (perm: ="
+            } else {
+                successMessage += "Created directory \(target) (perm: ="
+            }
+
+            if let mode = mode {
+                successMessage += mode
+            } else {
+                successMessage += "default"
+            }
+
+            successMessage += ")"
+
+            commandMessage(command: commandName!, success: successMessage, result: result)
         }
+    }
+
+    func checkDirectoryExists(path: String) -> Bool {
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: path) {
+            return true
+        }
+        return false
     }
 
     func processParameters(characters: String) {
