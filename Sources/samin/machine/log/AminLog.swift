@@ -6,6 +6,9 @@ import Foundation
 
 protocol AminLog {
 
+    var spec: Spec? { get set }
+    var parser: XMLParser? { get set }
+
     // TODO do we need info etc rather than a single 'success' bucket?
     func error(message: String)
     func warning(message: String)

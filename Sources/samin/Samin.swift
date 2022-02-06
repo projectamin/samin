@@ -79,6 +79,9 @@ public class Samin {
         profileParser.delegate = machine
 
         print("About to parse!")
+        // TODO manage parser/spec references through the stack better.
+        // TODO this is awful crap.
+        spec.log?.parser = profileParser
         profileParser.parse()
         print("Parsing completed.")
     }

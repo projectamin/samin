@@ -8,9 +8,8 @@ import FoundationXML
 #endif
 
 class AminLogStandard: AminLog {
-
-    private var spec: Spec?
-    private var parser: XMLParser?
+    public var spec: Spec?
+    public var parser: XMLParser?
 
     func writeMessage(message: String, attributes: [String: String]) {
         print("AminLogStandard - writeMessage")

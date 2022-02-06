@@ -83,22 +83,17 @@ class AminCommandMkdir: AminCommandBase {
     }
 
     func processParameters(characters: String) {
-        do {
-            let clean = characters.trimmingCharacters(in: NSCharacterSet.controlCharacters)
-            let things = clean.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
-            things.forEach{ item in
-                if(!item.isEmpty) {
-                    parameters.append(item)
-                }
+        let clean = characters.trimmingCharacters(in: NSCharacterSet.controlCharacters)
+        let things = clean.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
+        things.forEach{ item in
+            if(!item.isEmpty) {
+                parameters.append(item)
             }
-        } catch {
-            print("Error parsing params.")
-            spec?.log?.aminError(message: "Failed to parse params.")
         }
     }
 
     func processFlag(characters: String) {
-        if let attributeData = attributes!["Value"] {
+        if attributes!["Value"] != nil {
             if(modeFlags.contains(characters)) {
                 mode = characters
             } else {

@@ -36,6 +36,7 @@ public class Spec {
         filters["middle"] = Dictionary<String, XmlSaxBase>()
         filters["end"] = Dictionary<String, XmlSaxBase>()
         writer.spec = self
+        log?.spec = self
     }
 
     deinit {
