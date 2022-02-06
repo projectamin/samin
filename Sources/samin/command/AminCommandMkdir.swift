@@ -15,7 +15,6 @@ class AminCommandMkdir: AminCommandBase {
     public var target: String?
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        print("mkdir filter start element")
         spec?.prefix = prefix
         spec?.localname = localName
         commandName = "mkdir"
@@ -36,7 +35,8 @@ class AminCommandMkdir: AminCommandBase {
                 target = string
                 break
             default:
-                print("unhandled element.")
+                // Don't need to do anything here element won't be supported by filter.
+                break
             }
         } else {
             super.parser(parser, foundCharacters: string)

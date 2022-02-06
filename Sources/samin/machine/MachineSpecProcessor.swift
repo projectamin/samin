@@ -29,8 +29,6 @@ class MachineSpecProcessor: XmlSaxBase {
 
     // TODO Allow passing machine spec url.
     public func parseMachineSpec() {
-        print("parseMachineSpec")
-
         let machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
 

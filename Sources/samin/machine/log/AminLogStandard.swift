@@ -1,7 +1,3 @@
-//
-// Created by swishy on 2/15/21.
-//
-
 import Foundation
 #if canImport(FoundationXML)
 import FoundationXML
@@ -12,7 +8,6 @@ class AminLogStandard: AminLog {
     public var parser: XMLParser?
 
     func writeMessage(message: String, attributes: [String: String]) {
-        print("AminLogStandard - writeMessage")
         driverStartElement(element: "amin:message", attributes: attributes)
         driverChars(characters: message)
         driverEndElement(element: "amin:message")
@@ -50,7 +45,6 @@ class AminLogStandard: AminLog {
 
 
     func driverStartElement(element: String, attributes:[String: String]) {
-        print(element)
         spec?.writer.parser(parser!, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
     }
 

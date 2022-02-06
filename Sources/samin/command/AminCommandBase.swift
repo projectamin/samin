@@ -17,7 +17,6 @@ class AminCommandBase: XmlSaxBase {
     public var element: String?
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        print("AminCommandBase start element")
         let prefix = spec?.prefix ?? ""
         let localName = spec?.localname ?? ""
         attributes = attributeDict
@@ -62,6 +61,7 @@ class AminCommandBase: XmlSaxBase {
         arguments.append(contentsOf: parameters)
 
         // TODO Support debug.
+        // TODO get pipe to spec.buffer
         let outputPipe = Pipe()
         let errorPipe = Pipe()
         let task = Process()

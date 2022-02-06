@@ -23,13 +23,10 @@ class AminMachineDispatcher: XmlSaxBase {
 
     public override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         spec!.writer.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
-        print("Dispatcher - didEndElement")
         delegate?.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
     }
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        print("did start element dispatcher")
-        spec?.log?.success(message: "Dispatcher start called!!")
         spec!.writer.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
 
         // TODO Check spec for error.
@@ -43,22 +40,18 @@ class AminMachineDispatcher: XmlSaxBase {
         // TODO setup to do different things.
         let middleFilters = spec!.filters["middle"]!
         if(elementName == "amin:command") {
-            print("Dispatcher loading command filter")
             let filterName = attributeDict["name"]!
-            print(filterName)
             let filter: XmlSaxBase = middleFilters[filterName]!
             // TODO even more crap this needs to be fixed.
             delegate = filter
             filter.spec = spec
             delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
         } else {
-            print("Dispatcher delegating")
             delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
         }
     }
 
     override func parser(_ parser: XMLParser, foundCharacters string: String) {
-        print("Dispatcher - foundCharacters")
         spec!.writer.parser(parser, foundCharacters: string)
         delegate?.parser(parser, foundCharacters: string)
     }
