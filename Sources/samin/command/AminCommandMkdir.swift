@@ -54,9 +54,12 @@ class AminCommandMkdir: AminCommandBase {
 
     func processParameters(characters: String) {
         do {
-            let things = characters.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
+            let clean = characters.trimmingCharacters(in: NSCharacterSet.controlCharacters)
+            let things = clean.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
             things.forEach{ item in
-                parameters.append(item)
+                if(!item.isEmpty) {
+                    parameters.append(item)
+                }
             }
         } catch {
             print("Error parsing params.")

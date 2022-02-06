@@ -37,28 +37,48 @@ class AminCommandBase: XmlSaxBase {
     }
 
 
-    func commandMessage() {
+    func commandMessage(command: String, success: String?, result: CommandResult) {
         // TODO Dumps success message  / OUT / Error to Log.
-
+        let log = spec?.log
+        if let status = result.status {
+            // TODO implement support for>
+            // TODO spec.aminError = "red"
+            log?.aminError(message: result.error!)
+            if let error = result.error {
+                log?.error(message: error)
+            }
+            if let out = result.out {
+                log?.aminOut(message: out)
+            }
+        } else {
+            log?.success(message: success!)
+            log?.aminOut(message: result.out!)
+        }
     }
 
     func launchCommand() {
+
+        var arguments = ["\(command!)"]
+        arguments.append(contentsOf: flags)
+        arguments.append(contentsOf: parameters)
 
         // TODO Support debug.
         let pipe = Pipe()
         let task = Process()
         task.environment = environmentVariables
         task.launchPath = "/usr/bin/env"
-        task.arguments = ["bash", "-c", "\(command!)"]
+        task.arguments = arguments
         task.standardError = pipe
         task.standardOutput = pipe
         task.launch()
         task.waitUntilExit()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: String.Encoding.utf8)
-        print("COMMAND: \(command) OUTPUT: \(output)")
+        print("COMMAND: \(command!) OUTPUT: \(output!)")
+        print(task.terminationStatus)
         if (task.terminationStatus == 0) {
-            // TODO Handle error.
+
         }
+        // TODO this needs to return CommandType value.
     }
 }
