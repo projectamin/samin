@@ -60,7 +60,7 @@ public class Samin {
         // TODO being stuff straight into parser below not triggering spec read.
         machineSpecProcessor.parseMachineSpec()
 
-        let spec = machineSpecProcessor.machineSpec
+        let spec = machineSpecProcessor.spec!
         print("loadedSpec \(spec)")
         spec.buffer = outputStream
 

@@ -16,7 +16,7 @@ class Document: XmlSaxBase {
 
     // Strips out :: in machine spec to map to swift class names.
     func processFilterName(name: String) -> String {
-        return name.trimmingCharacters(in: .whitespacesAndNewlines)
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
                 .replacingOccurrences(of: "::", with: "", options: NSString.CompareOptions.literal, range: nil)
     }
 

@@ -91,6 +91,8 @@ class AminCommandBase: XmlSaxBase {
             result.type = CommandType.out
         }
 
+        print(result.out)
+
         return result
     }
 }

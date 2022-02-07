@@ -16,6 +16,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
         .package(url: "https://github.com/crossroadlabs/Regex.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,7 +24,8 @@ let package = Package(
         .target(
             name: "samin",
             dependencies: [
-                .product(name: "Regex", package: "Regex")
+                .product(name: "Regex", package: "Regex"),
+                .product(name: "Collections", package: "swift-collections")
             ]),
         .target(
                 name: "samin-cli",

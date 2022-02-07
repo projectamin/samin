@@ -38,9 +38,8 @@ class AminCommandMkdir: AminCommandBase {
                 // Don't need to do anything here element won't be supported by filter.
                 break
             }
-        } else {
-            super.parser(parser, foundCharacters: string)
         }
+        super.parser(parser, foundCharacters: string)
     }
 
     override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
@@ -72,6 +71,8 @@ class AminCommandMkdir: AminCommandBase {
 
             commandMessage(command: commandName!, success: successMessage, result: result)
         }
+
+        super.parser(_: parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
     }
 
     func checkDirectoryExists(path: String) -> Bool {
@@ -93,6 +94,7 @@ class AminCommandMkdir: AminCommandBase {
     }
 
     func processFlag(characters: String) {
+        print("processFlag")
         if attributes!["Value"] != nil {
             if(modeFlags.contains(characters)) {
                 mode = characters

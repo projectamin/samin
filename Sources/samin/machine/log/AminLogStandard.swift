@@ -7,7 +7,7 @@ class AminLogStandard: AminLog {
     public var spec: Spec?
     public var parser: XMLParser?
 
-    func writeMessage(message: String, attributes: [String: String]) {
+    public func writeMessage(message: String, attributes: [String: String]) {
         driverStartElement(element: "amin:message", attributes: attributes)
         driverChars(characters: message)
         driverEndElement(element: "amin:message")

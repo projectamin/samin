@@ -3,6 +3,9 @@ import Foundation
 import FoundationXML
 #endif
 
+/**
+ In Perl this used to do the filter ordering as well but was just as easy in swift to manage in the loading.
+ */
 class AminMachineDispatcher: XmlSaxBase {
 
     public required init() {
@@ -12,47 +15,14 @@ class AminMachineDispatcher: XmlSaxBase {
     init(machineSpec: Spec!) {
         super.init()
         spec = machineSpec
-    }
-
-    // Sorts the filters into the correct order for dispatching.
-    // This also sets up the chains for each 'middle' filter.
-    private func setFilterHandlers() {
-        let middleFilters = spec!.filters["middle"]!
-
-    }
-
-    public override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        spec!.writer.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
-        delegate?.parser(parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
-    }
-
-    public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        spec!.writer.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
-
-        // TODO Check spec for error.
-
-        // TODO This is bollocks - dispatcher needs to set the handler chain for each filter in the stack
-        // i.e. permanents in order then finally the command/cond etc filter itself
-        // so when the sax event occurs it gets fired to all permanent then the appropriate
-        // 'command' filter, this effectively splits the SAX event hierarchy into a sax event
-        // triggering a chain of events in a static sequence as opposed to a one to one mapping.
-        // TODO make machine/dispatcher pluggable as per Perl implementation so they can be
-        // TODO setup to do different things.
-        let middleFilters = spec!.filters["middle"]!
-        if(elementName == "amin:command") {
-            let filterName = attributeDict["name"]!
-            let filter: XmlSaxBase = middleFilters[filterName]!
-            // TODO even more crap this needs to be fixed.
-            delegate = filter
+        // Filters end up with no spec associated as they are dynamically created so assign ref to spec.
+        spec?.filters?.forEach { (filter) in
             filter.spec = spec
-            delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
-        } else {
-            delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
         }
-    }
 
-    override func parser(_ parser: XMLParser, foundCharacters string: String) {
-        spec!.writer.parser(parser, foundCharacters: string)
-        delegate?.parser(parser, foundCharacters: string)
+        // Load up our special dispatcher = we can't do magic stuff like in perl so do things the hard way.
+        let dispatcher = AminMachineFilterDispatcher()
+        dispatcher.spec = machineSpec
+        delegate = dispatcher
     }
 }
