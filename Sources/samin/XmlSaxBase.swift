@@ -23,6 +23,12 @@ open class XmlSaxBase: NSObject, XMLParserDelegate {
     public func parserDidEndDocument(_ parser: XMLParser) {
         delegate?.parserDidEndDocument(parser)
     }
+
+    public func parser(_ parser: XMLParser, didStartMappingPrefix prefix: String, toURI namespaceURI: String) {
+        print("Prefix: \(prefix) Namespace: \(namespaceURI)")
+        delegate?.parser(parser, didStartMappingPrefix: prefix, toURI: namespaceURI)
+    }
+
     public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
     }

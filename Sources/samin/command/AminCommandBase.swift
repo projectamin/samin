@@ -43,6 +43,7 @@ class AminCommandBase: XmlSaxBase {
             // TODO spec.aminError = "red"
             log?.aminError(message: result.error!)
             if let error = result.error {
+                spec?.aminError = true
                 log?.error(message: error)
             }
             if let out = result.out {
@@ -91,7 +92,7 @@ class AminCommandBase: XmlSaxBase {
             result.type = CommandType.out
         }
 
-        print(result.out)
+        print(error)
 
         return result
     }

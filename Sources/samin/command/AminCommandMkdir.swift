@@ -15,6 +15,8 @@ class AminCommandMkdir: AminCommandBase {
     public var target: String?
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        print("AminCommandMkdir")
+        print(attributeDict)
         spec?.prefix = prefix
         spec?.localname = localName
         commandName = "mkdir"
@@ -87,7 +89,7 @@ class AminCommandMkdir: AminCommandBase {
         let clean = characters.trimmingCharacters(in: NSCharacterSet.controlCharacters)
         let things = clean.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
         things.forEach{ item in
-            if(!item.isEmpty) {
+            if(!item.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
                 parameters.append(item)
             }
         }

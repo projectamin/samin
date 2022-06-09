@@ -88,10 +88,15 @@ class MachineSpecProcessor: XmlSaxBase {
                 // spec?.log = instance
                 print("Custom Log Implementation declared in spec.")
                 spec?.log = AminLogStandard()
+                spec?.log?.spec = spec
             } else {
                 // Default to AminLogStandard
                 spec?.log = AminLogStandard()
+                spec?.log?.spec = spec
             }
+
+            // TODO Bandaid to test it works.
+            spec?.writer = AminMachineHandlerWriter(machineSpec: spec)
 
 
             print("Begin Filters Loaded: \(filters["begin"]?.count)")

@@ -19,7 +19,7 @@ struct SaminCli: ParsableCommand {
             }
             inputStream.open()
             let amin = Samin()
-            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: true) else {
+            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
                 print("Unable to access stdout")
                 return
             }
@@ -31,7 +31,15 @@ struct SaminCli: ParsableCommand {
             let amin = Samin()
             let url = URL(string: uri!)
             print("Processing URL")
-            amin.parse(profileUri: url!)
+
+            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
+                print("Unable to access stdout")
+                return
+            }
+            outputStream.schedule(in: .main, forMode: .default)
+            outputStream.open()
+            amin.parse(profileUri: url!, outputStream: outputStream)
+            outputStream.close()
         }
     }
 }

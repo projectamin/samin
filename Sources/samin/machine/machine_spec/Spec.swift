@@ -18,10 +18,10 @@ public class Spec {
     var generator: String? = nil
     //
     var handler: String? = nil
-    var log: AminLog? = AminLogStandard()
+    var log: AminLog?
     // This maps filters to position keyed by name.
     var filters: [XmlSaxBase]?
-    let writer = AminMachineHandlerWriter()
+    var writer: XmlSaxBase?
     var buffer: OutputStream? = nil
 
     // In perl land these two are updated to track the current element.
@@ -33,8 +33,7 @@ public class Spec {
     var aminError: Bool = false
 
     init() {
-        writer.spec = self
-        log?.spec = self
+
     }
 
     deinit {

@@ -45,15 +45,15 @@ class AminLogStandard: AminLog {
 
 
     func driverStartElement(element: String, attributes:[String: String]) {
-        spec?.writer.parser(parser!, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
+        spec?.writer?.parser(parser!, didStartElement: element, namespaceURI: nil, qualifiedName: nil, attributes: attributes)
     }
 
     func driverEndElement(element: String) {
-        spec?.writer.parser(parser!, didEndElement: element, namespaceURI: nil, qualifiedName: nil)
+        spec?.writer?.parser(parser!, didEndElement: element, namespaceURI: nil, qualifiedName: nil)
     }
 
     func driverChars(characters: String) {
-        spec?.writer.parser(parser!, foundCharacters: characters)
+        spec?.writer?.parser(parser!, foundCharacters: characters)
     }
 
 }

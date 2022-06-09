@@ -12,16 +12,12 @@ public class Samin {
         print("Amin - brought to you by the magic of dahuts everywhere.")
     }
 
-    public func parse(profileUri: URL) {
+    public func parse(profileUri: URL, outputStream: OutputStream) {
         // TODO Generate input stream from URL/URI and call inputstream overload.
         if(profileUri.isFileURL) {
             print(profileUri)
             guard let inputStream = InputStream(fileAtPath: "/\(profileUri.host!)\(profileUri.relativePath)") else {
                 print("Unable to access file: \(profileUri.absoluteString)")
-                return
-            }
-            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: true) else {
-                print("Unable to access stdout")
                 return
             }
             inputStream.schedule(in: .main, forMode: .common)
@@ -69,7 +65,6 @@ public class Samin {
 
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
-
         let machine = AminMachineDispatcher(machineSpec: spec)
 
         print("Dispatcher created.")

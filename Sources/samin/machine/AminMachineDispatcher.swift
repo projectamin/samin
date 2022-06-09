@@ -8,21 +8,24 @@ import FoundationXML
  */
 class AminMachineDispatcher: XmlSaxBase {
 
+    private var filterDispatcher: AminMachineFilterDispatcher;
     public required init() {
-
+        filterDispatcher = AminMachineFilterDispatcher()
     }
 
     init(machineSpec: Spec!) {
+        filterDispatcher = AminMachineFilterDispatcher()
         super.init()
         spec = machineSpec
+        print("Amin Dispatcher Init")
         // Filters end up with no spec associated as they are dynamically created so assign ref to spec.
         spec?.filters?.forEach { (filter) in
+            print("Filter!")
             filter.spec = spec
         }
 
         // Load up our special dispatcher = we can't do magic stuff like in perl so do things the hard way.
-        let dispatcher = AminMachineFilterDispatcher()
-        dispatcher.spec = machineSpec
-        delegate = dispatcher
+        filterDispatcher.spec = machineSpec
+        delegate = filterDispatcher
     }
 }
