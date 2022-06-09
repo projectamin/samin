@@ -6,23 +6,36 @@ import FoundationXML
 
 public class Samin {
 
-    // TODO Temporary to get going is equal to the Buffer in perl.
-    let outputstream = OutputStream.toMemory()
     var spec: Spec?
 
-    init() {
+    public init() {
         print("Amin - brought to you by the magic of dahuts everywhere.")
     }
 
-    func parse(profileUri: URL) {
+    public func parse(profileUri: URL, outputStream: OutputStream) {
         // TODO Generate input stream from URL/URI and call inputstream overload.
+        if(profileUri.isFileURL) {
+            print(profileUri)
+            guard let inputStream = InputStream(fileAtPath: "/\(profileUri.host!)\(profileUri.relativePath)") else {
+                print("Unable to access file: \(profileUri.absoluteString)")
+                return
+            }
+            inputStream.schedule(in: .main, forMode: .common)
+            outputStream.schedule(in: .main, forMode: .common)
+            inputStream.open()
+            outputStream.open()
+            parse(profileStream: inputStream, outputStream: outputStream)
+        } else {
+            // handle HTTP
+            print("HTTP URL not yet supported.")
+        }
     }
 
     func parse(profileUri: URL, machineSpecification: URL) {
 
     }
 
-    func parse(profileStream: InputStream) -> OutputStream {
+    public func parse(profileStream: InputStream, outputStream: OutputStream) {
 
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
@@ -43,38 +56,29 @@ public class Samin {
         // TODO being stuff straight into parser below not triggering spec read.
         machineSpecProcessor.parseMachineSpec()
 
-        spec = machineSpecProcessor.machineSpec
-        print("loadedSpec \(spec!)")
-        spec!.buffer = outputstream
+        let spec = machineSpecProcessor.spec!
+        print("loadedSpec \(spec)")
+        spec.buffer = outputStream
+
+        print("Firing up machine.")
 
 
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
+        let machine = AminMachineDispatcher(machineSpec: spec)
 
-        let machine = AminMachineDispatcher(machineSpec: spec!)
+        print("Dispatcher created.")
 
         // This is the core machine parser.
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine
 
-        // Make sure the output stream is open for writing.
-        outputstream.open()
-
-        // OK here we launch the parsing off into the sunset and return the stream immediately.
-        let queue = DispatchQueue(label: "Amin Dispatch Queue")
-        queue.async { [self] in
-            let success = profileParser.parse()
-            // Close stream back on main thread.
-            DispatchQueue.main.sync {
-                outputstream.close()
-            }
-            if(success) {
-                print("Parsing succeeded")
-            } else {
-                print("Parsing failed.")
-            }
-        }
-        return outputstream
+        print("About to parse!")
+        // TODO manage parser/spec references through the stack better.
+        // TODO this is awful crap.
+        spec.log?.parser = profileParser
+        profileParser.parse()
+        print("Parsing completed.")
     }
 
     func parse(profileStream: InputStream, machineSpecification: InputStream) {

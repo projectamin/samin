@@ -1,19 +1,16 @@
-//
-// Created by swishy on 29/08/20.
-//
-
 import Foundation
+import OrderedCollections
 #if canImport(FoundationXML)
 import FoundationXML
 #endif
 
 class MachineSpecProcessor: XmlSaxBase {
 
-    var machineSpec = Spec()
+    private var filters: OrderedDictionary<String, [XmlSaxBase]> = ["begin": [], "middle": [], "end": []]
 
     // TODO make this pluggable so we can pull from NSBundle on iOS
     func getMachineSpecPath() -> String {
-        let fileManager = FileManager()
+        let fileManager = FileManager.default
         if let home = ProcessInfo.processInfo.environment["HOME"] {
             if(fileManager.fileExists(atPath: home + "/.amin/machine_spec.xml")) {
                 return home + "/.amin/machine_spec.xml"
@@ -29,22 +26,22 @@ class MachineSpecProcessor: XmlSaxBase {
 
     // TODO Allow passing machine spec url.
     public func parseMachineSpec() {
-        print("machine spec start doc")
-
-        var machineSpecUrl = URL(string: getMachineSpecPath())!
+        spec = Spec()
+        let machineSpecUrl = URL(string: getMachineSpecPath())!
         print(machineSpecUrl)
 
-        var document = Document()
-        var include = XInclude()
+        let document = Document()
+        let include = XInclude()
         include.delegate = document
 
-        var fileHandle = FileHandle(forReadingAtPath: machineSpecUrl.absoluteString)
+        let fileHandle = FileHandle(forReadingAtPath: machineSpecUrl.absoluteString)
 
         if fileHandle != nil {
             let data = fileHandle?.readDataToEndOfFile()
             fileHandle?.closeFile()
-            var parser = XMLParser(data: data!)
+            let parser = XMLParser(data: data!)
             parser.delegate = include
+            print("Parsing machine spec.")
             parser.parse()
 
             // Here we attempt to load and sort filters into correct position.
@@ -54,9 +51,9 @@ class MachineSpecProcessor: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
-                    var createdClass = NSClassFromString("samin.\(key)")
-                    if(createdClass == nil) {
-                        createdClass = NSClassFromString("saminTests.\(key)")
+                    guard let createdClass = NSClassFromString("samin.\(key)") else {
+                        print("Unable to create instance of filter \(key)")
+                        throw MachineSpecError.unableToLoadFilter(filter: key)
                     }
                     let typedInstance = createdClass as! XmlSaxBase.Type
                     let instance = typedInstance.init()
@@ -66,13 +63,13 @@ class MachineSpecProcessor: XmlSaxBase {
                     }
                     switch(value.position) {
                     case "begin":
-                        self.machineSpec.filters["begin"]![value.name] = instance
-                    case "permanent":
-                        self.machineSpec.filters["permanent"]![value.name] = instance
+                        filters["begin"]!.append(instance)
                     case "middle":
-                        self.machineSpec.filters["middle"]![value.name] = instance
+                        filters["middle"]!.append(instance)
                     case "end":
-                        self.machineSpec.filters["end"]![value.name] = instance
+                        filters["end"]!.append(instance)
+                    case "permanent":
+                        throw MachineSpecError.unsupportedPosition
                     default:
                         throw MachineSpecError.invalidPosition
                     }
@@ -82,13 +79,34 @@ class MachineSpecProcessor: XmlSaxBase {
                 print("Error loading filters: \(error)")
             }
 
+            if let logger = document.logClass {
+                // TODO sort out loading of Log with AminLog being a protocol and being uable to have a
+                // TODO default constructor declared.
+                // let createdClass = NSClassFromString("samin.\(logger)")
+                // let typedInstance = createdClass as! AminLog.Type
+                // let instance = typedInstance.init()
+                // spec?.log = instance
+                print("Custom Log Implementation declared in spec.")
+                spec?.log = AminLogStandard()
+                spec?.log?.spec = spec
+            } else {
+                // Default to AminLogStandard
+                spec?.log = AminLogStandard()
+                spec?.log?.spec = spec
+            }
 
-            print("Begin Filters Loaded: \(machineSpec.filters["begin"]!.count)")
-            print("Permanent Filters Loaded: \(machineSpec.filters["permanent"]!.count)")
-            print("Middle Filters Loaded: \(machineSpec.filters["middle"]!.count)")
-            print("End Filters Loaded: \(machineSpec.filters["end"]!.count)")
+            // TODO Bandaid to test it works.
+            spec?.writer = AminMachineHandlerWriter(machineSpec: spec)
 
 
+            print("Begin Filters Loaded: \(filters["begin"]?.count)")
+            print("Permanent Filters Loaded: \(filters["permanent"]?.count)")
+            print("Middle Filters Loaded: \(filters["middle"]?.count)")
+            print("End Filters Loaded: \(filters["end"]?.count)")
+
+            spec?.filters = filters.values.reduce([]) {(result, item) in
+                result + item
+            }
         }
 
     }

@@ -7,7 +7,7 @@ open class XmlSaxBase: NSObject, XMLParserDelegate {
 
     // Akin to a handler in XML::SAX::Base in Perl land
     // we will refer to such in Objc/Swift terms.
-    weak var delegate: XmlSaxBase?
+    var delegate: XmlSaxBase?
     var spec: Spec?
 
     // To allow dynamic creation
@@ -23,6 +23,12 @@ open class XmlSaxBase: NSObject, XMLParserDelegate {
     public func parserDidEndDocument(_ parser: XMLParser) {
         delegate?.parserDidEndDocument(parser)
     }
+
+    public func parser(_ parser: XMLParser, didStartMappingPrefix prefix: String, toURI namespaceURI: String) {
+        print("Prefix: \(prefix) Namespace: \(namespaceURI)")
+        delegate?.parser(parser, didStartMappingPrefix: prefix, toURI: namespaceURI)
+    }
+
     public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         delegate?.parser(parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
     }

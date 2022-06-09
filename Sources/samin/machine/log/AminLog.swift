@@ -6,6 +6,12 @@ import Foundation
 
 protocol AminLog {
 
+    var spec: Spec? { get set }
+    var parser: XMLParser? { get set }
+
+    // This allows the likes of AminMachineHandlerEmpty to write messages directly.
+    func writeMessage(message: String, attributes: [String: String])
+
     // TODO do we need info etc rather than a single 'success' bucket?
     func error(message: String)
     func warning(message: String)

@@ -18,20 +18,22 @@ public class Spec {
     var generator: String? = nil
     //
     var handler: String? = nil
-    var log: AminLog? = nil
+    var log: AminLog?
     // This maps filters to position keyed by name.
-    var filters = Dictionary<String, Dictionary<String, XmlSaxBase>>()
-    let writer = AminMachineHandlerWriter()
-
+    var filters: [XmlSaxBase]?
+    var writer: XmlSaxBase?
     var buffer: OutputStream? = nil
 
+    // In perl land these two are updated to track the current element.
+    // Not sure I'm happy about this but following suite atm to keep things easy.
+    var prefix: String? = nil
+    var localname: String? = nil
+
+    // In perl this flag loads Amin::Machine::Handler::Empty and effectively does a no-op for the rest of the doc.
+    var aminError: Bool = false
+
     init() {
-        // TODO Make dynamic?
-        filters["begin"] = Dictionary<String, XmlSaxBase>()
-        filters["permanent"] = Dictionary<String, XmlSaxBase>()
-        filters["middle"] = Dictionary<String, XmlSaxBase>()
-        filters["end"] = Dictionary<String, XmlSaxBase>()
-        writer.spec = self
+
     }
 
     deinit {
