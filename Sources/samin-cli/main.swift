@@ -10,18 +10,14 @@ struct SaminCli: ParsableCommand {
     var uri: String?
 
     mutating func run() throws {
-        print("Processing profile via stdin?")
-        print(profile)
         if(profile) {
             guard let inputStream = InputStream(fileAtPath: "/dev/stdin") else {
-                print("Unable to access stdin")
-                return
+                throw AminError.streamError(error: "Unable to access stdin")
             }
             inputStream.open()
             let amin = Samin()
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
-                print("Unable to access stdout")
-                return
+                throw AminError.streamError(error: "Unable to access stdout")
             }
             outputStream.schedule(in: .main, forMode: .default)
             outputStream.open()
@@ -30,15 +26,13 @@ struct SaminCli: ParsableCommand {
         if(uri != nil) {
             let amin = Samin()
             let url = URL(string: uri!)
-            print("Processing URL")
-
+            print("Processing URI: \(uri!)")
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
-                print("Unable to access stdout")
-                return
+                throw AminError.streamError(error: "Unable to access stdout")
             }
             outputStream.schedule(in: .main, forMode: .default)
             outputStream.open()
-            amin.parse(profileUri: url!, outputStream: outputStream)
+            try amin.parse(profileUri: url!, outputStream: outputStream)
             outputStream.close()
         }
     }

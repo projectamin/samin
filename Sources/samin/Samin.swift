@@ -12,13 +12,11 @@ public class Samin {
         print("Amin - brought to you by the magic of dahuts everywhere.")
     }
 
-    public func parse(profileUri: URL, outputStream: OutputStream) {
+    public func parse(profileUri: URL, outputStream: OutputStream) throws {
         // TODO Generate input stream from URL/URI and call inputstream overload.
         if(profileUri.isFileURL) {
-            print(profileUri)
             guard let inputStream = InputStream(fileAtPath: "/\(profileUri.host!)\(profileUri.relativePath)") else {
-                print("Unable to access file: \(profileUri.absoluteString)")
-                return
+                throw AminError.streamError(error: "Unable to access file: \(profileUri.absoluteString)")
             }
             inputStream.schedule(in: .main, forMode: .common)
             outputStream.schedule(in: .main, forMode: .common)
@@ -26,8 +24,7 @@ public class Samin {
             outputStream.open()
             parse(profileStream: inputStream, outputStream: outputStream)
         } else {
-            // handle HTTP
-            print("HTTP URL not yet supported.")
+            throw AminError.streamError(error: "HTTP URL not yet supported.")
         }
     }
 
@@ -57,28 +54,19 @@ public class Samin {
         machineSpecProcessor.parseMachineSpec()
 
         let spec = machineSpecProcessor.spec!
-        print("loadedSpec \(spec)")
         spec.buffer = outputStream
-
-        print("Firing up machine.")
-
 
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
         let machine = AminMachineDispatcher(machineSpec: spec)
 
-        print("Dispatcher created.")
-
         // This is the core machine parser.
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine
-
-        print("About to parse!")
         // TODO manage parser/spec references through the stack better.
         // TODO this is awful crap.
         spec.log?.parser = profileParser
         profileParser.parse()
-        print("Parsing completed.")
     }
 
     func parse(profileStream: InputStream, machineSpecification: InputStream) {

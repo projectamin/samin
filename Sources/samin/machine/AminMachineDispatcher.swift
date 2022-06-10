@@ -17,10 +17,8 @@ class AminMachineDispatcher: XmlSaxBase {
         filterDispatcher = AminMachineFilterDispatcher()
         super.init()
         spec = machineSpec
-        print("Amin Dispatcher Init")
         // Filters end up with no spec associated as they are dynamically created so assign ref to spec.
         spec?.filters?.forEach { (filter) in
-            print("Filter!")
             filter.spec = spec
         }
 

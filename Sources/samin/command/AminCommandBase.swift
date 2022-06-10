@@ -36,14 +36,14 @@ class AminCommandBase: XmlSaxBase {
 
 
     func commandMessage(command: String, success: String?, result: CommandResult) {
-        // TODO Dumps success message  / OUT / Error to Log.
+        // TODO This logic is not yet full baked see Perl implementation.
         let log = spec?.log
         if let status = result.status {
             // TODO implement support for>
             // TODO spec.aminError = "red"
-            log?.aminError(message: result.error!)
             if let error = result.error {
                 spec?.aminError = true
+                log?.aminError(message: result.error!)
                 log?.error(message: error)
             }
             if let out = result.out {
@@ -92,8 +92,26 @@ class AminCommandBase: XmlSaxBase {
             result.type = CommandType.out
         }
 
-        print(error)
-
         return result
+    }
+
+    func charactersShell(elementName: String, attributes attributeDict: [String : String], foundCharacters string: String) {
+        let element = getElement(fullElement: elementName)
+        if(element.localName == "shell") {
+            if let dir = attributeDict["dir"] {
+                directory = dir
+            }
+        }
+        if(element.localName == "env") {
+            if let variable = attributeDict["env"] {
+                environmentVariables(variable: variable)
+            }
+        }
+    }
+
+    func environmentVariables(variable: String) {
+        // Command execution expects dictionary so we assign it here.
+        let elements = variable.split(separator: "=", maxSplits: 1)
+        environmentVariables[String(elements[0])] = String(elements[1])
     }
 }

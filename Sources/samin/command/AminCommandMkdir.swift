@@ -15,8 +15,6 @@ class AminCommandMkdir: AminCommandBase {
     public var target: String?
 
     public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        print("AminCommandMkdir")
-        print(attributeDict)
         spec?.prefix = prefix
         spec?.localname = localName
         commandName = "mkdir"
@@ -96,7 +94,6 @@ class AminCommandMkdir: AminCommandBase {
     }
 
     func processFlag(characters: String) {
-        print("processFlag")
         if attributes!["Value"] != nil {
             if(modeFlags.contains(characters)) {
                 mode = characters

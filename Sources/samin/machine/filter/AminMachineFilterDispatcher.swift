@@ -9,7 +9,7 @@ class AminMachineFilterDispatcher: XmlSaxBase {
     }
 
     override func parser(_ parser: XMLParser, didStartMappingPrefix prefix: String, toURI namespaceURI: String) {
-        print("Prefix: \(prefix) Namespace: \(namespaceURI)")
+
     }
 
     override func parserDidStartDocument(_ parser: XMLParser) {

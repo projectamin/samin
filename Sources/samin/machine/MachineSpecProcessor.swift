@@ -28,8 +28,6 @@ class MachineSpecProcessor: XmlSaxBase {
     public func parseMachineSpec() {
         spec = Spec()
         let machineSpecUrl = URL(string: getMachineSpecPath())!
-        print(machineSpecUrl)
-
         let document = Document()
         let include = XInclude()
         include.delegate = document
@@ -41,7 +39,6 @@ class MachineSpecProcessor: XmlSaxBase {
             fileHandle?.closeFile()
             let parser = XMLParser(data: data!)
             parser.delegate = include
-            print("Parsing machine spec.")
             parser.parse()
 
             // Here we attempt to load and sort filters into correct position.
@@ -52,7 +49,6 @@ class MachineSpecProcessor: XmlSaxBase {
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
                     guard let createdClass = NSClassFromString("samin.\(key)") else {
-                        print("Unable to create instance of filter \(key)")
                         throw MachineSpecError.unableToLoadFilter(filter: key)
                     }
                     let typedInstance = createdClass as! XmlSaxBase.Type
@@ -73,7 +69,6 @@ class MachineSpecProcessor: XmlSaxBase {
                     default:
                         throw MachineSpecError.invalidPosition
                     }
-                    print(instance)
                 }
             } catch {
                 print("Error loading filters: \(error)")
@@ -86,7 +81,6 @@ class MachineSpecProcessor: XmlSaxBase {
                 // let typedInstance = createdClass as! AminLog.Type
                 // let instance = typedInstance.init()
                 // spec?.log = instance
-                print("Custom Log Implementation declared in spec.")
                 spec?.log = AminLogStandard()
                 spec?.log?.spec = spec
             } else {
@@ -97,12 +91,6 @@ class MachineSpecProcessor: XmlSaxBase {
 
             // TODO Bandaid to test it works.
             spec?.writer = AminMachineHandlerWriter(machineSpec: spec)
-
-
-            print("Begin Filters Loaded: \(filters["begin"]?.count)")
-            print("Permanent Filters Loaded: \(filters["permanent"]?.count)")
-            print("Middle Filters Loaded: \(filters["middle"]?.count)")
-            print("End Filters Loaded: \(filters["end"]?.count)")
 
             spec?.filters = filters.values.reduce([]) {(result, item) in
                 result + item

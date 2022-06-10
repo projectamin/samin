@@ -35,8 +35,4 @@ public class Spec {
     init() {
 
     }
-
-    deinit {
-        print("Spec is being deinitialized")
-    }
 }

@@ -25,7 +25,6 @@ open class XmlSaxBase: NSObject, XMLParserDelegate {
     }
 
     public func parser(_ parser: XMLParser, didStartMappingPrefix prefix: String, toURI namespaceURI: String) {
-        print("Prefix: \(prefix) Namespace: \(namespaceURI)")
         delegate?.parser(parser, didStartMappingPrefix: prefix, toURI: namespaceURI)
     }
 
