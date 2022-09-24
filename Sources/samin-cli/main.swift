@@ -3,7 +3,7 @@ import ArgumentParser
 import Foundation
 
 struct SaminCli: ParsableCommand {
-    @Flag(help: "Process profile via STDIN")
+    @Flag(name: .shortAndLong, help: "Process profile via STDIN")
     var profile = false
 
     @Option(name: .shortAndLong, help: "A URI containing an amin profile to process.")
