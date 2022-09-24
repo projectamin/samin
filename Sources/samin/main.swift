@@ -1,4 +1,4 @@
-import samin
+import libsamin
 import ArgumentParser
 import Foundation
 

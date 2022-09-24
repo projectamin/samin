@@ -10,5 +10,5 @@
         <amin:param name="target">/tmp/samin_build/</amin:param>
         <amin:param name="archive">/tmp/samin_build/swift-5.3.3-RELEASE-ubuntu20.04.tar.gz</amin:param>
     </amin:command>
-    <!-- TODO Add swift-build command to amin / samin -->
+    <!-- TODO Add swift-build command to amin / libsamin -->
 </amin:profile>
