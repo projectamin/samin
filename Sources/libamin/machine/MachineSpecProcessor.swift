@@ -48,7 +48,7 @@ class MachineSpecProcessor: XmlSaxBase {
 
                     // TODO Work out how to handle forced casting error when fails.
                     // TODO So we can catch graceful and set machine error state eventually.
-                    guard let createdClass = NSClassFromString("libsamin.\(key)") else {
+                    guard let createdClass = NSClassFromString("libamin.\(key)") else {
                         throw MachineSpecError.unableToLoadFilter(filter: key)
                     }
                     let typedInstance = createdClass as! XmlSaxBase.Type
@@ -77,7 +77,7 @@ class MachineSpecProcessor: XmlSaxBase {
             if let logger = document.logClass {
                 // TODO sort out loading of Log with AminLog being a protocol and being uable to have a
                 // TODO default constructor declared.
-                // let createdClass = NSClassFromString("libsamin.\(logger)")
+                // let createdClass = NSClassFromString("libamin.\(logger)")
                 // let typedInstance = createdClass as! AminLog.Type
                 // let instance = typedInstance.init()
                 // spec?.log = instance

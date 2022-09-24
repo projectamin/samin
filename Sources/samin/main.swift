@@ -1,4 +1,4 @@
-import libsamin
+import libamin
 import ArgumentParser
 import Foundation
 
@@ -15,7 +15,7 @@ struct SaminCli: ParsableCommand {
                 throw AminError.streamError(error: "Unable to access stdin")
             }
             inputStream.open()
-            let amin = Samin()
+            let amin = Amin()
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
                 throw AminError.streamError(error: "Unable to access stdout")
             }
@@ -24,7 +24,7 @@ struct SaminCli: ParsableCommand {
             amin.parse(profileStream: inputStream, outputStream: outputStream)
         }
         if(uri != nil) {
-            let amin = Samin()
+            let amin = Amin()
             let url = URL(string: uri!)
             print("Processing URI: \(uri!)")
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {

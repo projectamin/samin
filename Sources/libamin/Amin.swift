@@ -4,7 +4,7 @@ import FoundationXML
 #endif
 
 
-public class Samin {
+public class Amin {
 
     var spec: Spec?
 
