@@ -3,11 +3,11 @@
 //
 
 import XCTest
-@testable import samin
+@testable import libamin
 
 class AminWriterTests: XCTestCase, StreamDelegate {
     func testWriter() {
-        let amin = Samin()
+        let amin = Amin()
         let profile = "<amin:profile xmlns:amin=\"http://projectamin.org/ns/\"><amin:command name=\"echo\">WeCanHasCharacters</amin:command></amin:profile>"
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
