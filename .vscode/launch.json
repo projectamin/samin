@@ -1,0 +1,52 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:samin}",
+            "name": "Debug samin-cli",
+            "program": "${workspaceFolder:samin}/.build/debug/samin-cli",
+            "preLaunchTask": "swift: Build Debug samin-cli"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:samin}",
+            "name": "Release samin-cli",
+            "program": "${workspaceFolder:samin}/.build/release/samin-cli",
+            "preLaunchTask": "swift: Build Release samin-cli"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:samin}",
+            "name": "Debug samin",
+            "program": "${workspaceFolder:samin}/.build/debug/samin",
+            "preLaunchTask": "swift: Build Debug samin"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:samin}",
+            "name": "Release samin",
+            "program": "${workspaceFolder:samin}/.build/release/samin",
+            "preLaunchTask": "swift: Build Release samin"
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "swift",
+			"args": [
+				"build",
+				"--product",
+				"samin"
+			],
+			"cwd": "/home/swishy/Development/Source/ProjectAmin/samin",
+			"disableTaskQueue": true,
+			"problemMatcher": [
+				"$swiftc"
+			],
+			"group": "build",
+			"label": "swift: Build Debug samin",
+			"detail": "swift build --product samin"
+		}
+	]
+}

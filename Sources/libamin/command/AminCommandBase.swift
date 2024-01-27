@@ -1,7 +1,5 @@
 import Foundation
-#if canImport(FoundationXML)
 import FoundationXML
-#endif
 
 // This is reflective of Amin::Elt - just found the original naming confusing.
 class AminCommandBase: XmlSaxBase {
@@ -56,7 +54,7 @@ class AminCommandBase: XmlSaxBase {
     }
 
     func launchCommand() -> CommandResult {
-
+        let log = spec?.log
         var arguments = ["\(command!)"]
         arguments.append(contentsOf: flags)
         arguments.append(contentsOf: parameters)
@@ -67,12 +65,17 @@ class AminCommandBase: XmlSaxBase {
         let errorPipe = Pipe()
         let task = Process()
         task.environment = environmentVariables
-        task.launchPath = "/usr/bin/env"
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         task.arguments = arguments
         task.standardError = errorPipe
         task.standardOutput = outputPipe
-        task.launch()
-        task.waitUntilExit()
+        do {
+            try task.run()
+            task.waitUntilExit()
+        } catch {
+            log?.error(message: error.localizedDescription)
+        }
+
         let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
         let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: outputData, encoding: String.Encoding.utf8)

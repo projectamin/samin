@@ -1,4 +1,5 @@
 import Foundation
+import FoundationXML
 
 class AminMachineHandlerEmpty: AminCommandBase {
 

@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import FoundationXML
 
 protocol AminLog {
 

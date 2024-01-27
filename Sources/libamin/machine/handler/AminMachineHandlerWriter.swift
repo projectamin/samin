@@ -2,9 +2,7 @@
 // Created by swishy on 2/16/21.
 //
 import Foundation
-#if canImport(FoundationXML)
 import FoundationXML
-#endif
 
 class AminMachineHandlerWriter: XmlSaxBase {
 

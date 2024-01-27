@@ -1,8 +1,6 @@
 import Foundation
 import Regex
-#if canImport(FoundationXML)
 import FoundationXML
-#endif
 
 class AminCommandMkdir: AminCommandBase {
 

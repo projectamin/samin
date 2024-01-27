@@ -1,7 +1,5 @@
 import Foundation
-#if canImport(FoundationXML)
 import FoundationXML
-#endif
 
 class Document: XmlSaxBase {
 

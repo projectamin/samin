@@ -1,7 +1,5 @@
 import Foundation
-#if canImport(FoundationXML)
 import FoundationXML
-#endif
 
 /**
  In Perl this used to do the filter ordering as well but was just as easy in swift to manage in the loading.
