@@ -57,6 +57,7 @@ public class Amin {
         // TODO non optimal for stream processing. We want bytes off pipe
         // TODO being stuff straight into parser below not triggering spec read.
         machineSpecProcessor.parseMachineSpec()
+        assert(profile == outputXml)
 
         let spec = machineSpecProcessor.spec!
         spec.buffer = outputStream
@@ -71,7 +72,9 @@ public class Amin {
         // TODO manage parser/spec references through the stack better.
         // TODO this is awful crap.
         spec.log?.parser = profileParser
-        profileParser.parse()
+        let result = profileParser.parse()
+        print("\(result)")
+        
     }
 
     func parse(profileStream: InputStream, machineSpecification: InputStream) {
