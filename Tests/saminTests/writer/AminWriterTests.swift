@@ -11,7 +11,7 @@ class AminWriterTests: XCTestCase, StreamDelegate {
         let profile = "<amin:profile xmlns:amin=\"http://projectamin.org/ns/\"><amin:command name=\"echo\">WeCanHasCharacters</amin:command></amin:profile>"
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
-        let outputStream = OutputStream()
+        let outputStream = OutputStream(toMemory: ())
         outputStream.delegate = self
         outputStream.schedule(in: RunLoop.main, forMode: RunLoop.Mode.default)
         print("Opening Stream")

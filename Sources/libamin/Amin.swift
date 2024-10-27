@@ -33,10 +33,10 @@ public class Amin {
 
     public func parse(profileStream: InputStream, outputStream: OutputStream) {
 
-        // TODO Not sure this is actuall needed....
-        inputStream.schedule(in: .main, forMode: .common)
+        // TODO Not sure this is actually needed....
+        profileStream.schedule(in: .main, forMode: .common)
         outputStream.schedule(in: .main, forMode: .common)
-        inputStream.open()
+        profileStream.open()
         outputStream.open()
 
         // NOTE this varies from Perl where it needs to be triggered by profile processing.

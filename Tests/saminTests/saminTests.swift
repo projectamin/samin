@@ -13,7 +13,7 @@ final class saminTests: XCTestCase, StreamDelegate {
         let profile = "<amin:command name='mkdir' xmlns:amin='http://projectamin.org/ns/'>\n\t<amin:flag name='m'>0755</amin:flag>\n\t<amin:param name=\"target\">/tmp/test_ashell</amin:param>\n</amin:command>"
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
-        let outputStream = OutputStream()
+        let outputStream = OutputStream(toMemory: ())
         amin.parse(profileStream: inputStream, outputStream: outputStream)
 
         assert(outputStream.streamStatus == .open)
@@ -24,7 +24,7 @@ final class saminTests: XCTestCase, StreamDelegate {
         let profile = ""
         let data = profile.data(using: .utf8)
         let inputStream = InputStream(data: data!)
-        let outputStream = OutputStream()
+        let outputStream = OutputStream(toMemory: ())
         print(outputStream.streamStatus)
         let streamDelegate = OutputStreamReader()
         outputStream.delegate = streamDelegate
@@ -41,7 +41,7 @@ final class saminTests: XCTestCase, StreamDelegate {
     func testArch() {
         let amin = Amin()
         let inputStream = InputStream(fileAtPath: "xml/arch.xml")!
-        let outputStream = OutputStream()
+        let outputStream = OutputStream(toMemory: ())
         amin.parse(profileStream: inputStream, outputStream: outputStream)
     }
 
