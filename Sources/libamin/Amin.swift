@@ -18,13 +18,12 @@ public class Amin {
             guard let inputStream = InputStream(fileAtPath: "/\(profileUri.host!)\(profileUri.relativePath)") else {
                 throw AminError.streamError(error: "Unable to access file: \(profileUri.absoluteString)")
             }
-            inputStream.schedule(in: .main, forMode: .common)
-            outputStream.schedule(in: .main, forMode: .common)
-            inputStream.open()
-            outputStream.open()
             parse(profileStream: inputStream, outputStream: outputStream)
         } else {
-            throw AminError.streamError(error: "HTTP URL not yet supported.")
+            guard let inputStream = InputStream(url: profileUri) else {
+                throw AminError.streamError(error: "Unable to access URL: \(profileUri.absoluteString)")
+            }
+            parse(profileStream: inputStream, outputStream: outputStream)
         }
     }
 
@@ -33,6 +32,12 @@ public class Amin {
     }
 
     public func parse(profileStream: InputStream, outputStream: OutputStream) {
+
+        // TODO Not sure this is actuall needed....
+        inputStream.schedule(in: .main, forMode: .common)
+        outputStream.schedule(in: .main, forMode: .common)
+        inputStream.open()
+        outputStream.open()
 
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
