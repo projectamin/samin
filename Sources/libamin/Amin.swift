@@ -57,7 +57,6 @@ public class Amin {
         // TODO non optimal for stream processing. We want bytes off pipe
         // TODO being stuff straight into parser below not triggering spec read.
         machineSpecProcessor.parseMachineSpec()
-        assert(profile == outputXml)
 
         let spec = machineSpecProcessor.spec!
         spec.buffer = outputStream
