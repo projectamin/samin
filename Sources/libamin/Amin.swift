@@ -32,12 +32,13 @@ public class Amin {
     }
 
     public func parse(profileStream: InputStream, outputStream: OutputStream) {
-
+        print("Parsing profile")
         // TODO Not sure this is actually needed....
-        profileStream.schedule(in: .main, forMode: .common)
-        outputStream.schedule(in: .main, forMode: .common)
+        //profileStream.schedule(in: .main, forMode: .common)
+        //outputStream.schedule(in: .main, forMode: .common)
         profileStream.open()
-        outputStream.open()
+        //outputStream.open()
+        // print(profileStream.streamStatus)
 
         // NOTE this varies from Perl where it needs to be triggered by profile processing.
         // here we load the spec up front until I decide Bryan was right and this is a bad idea.
@@ -48,6 +49,7 @@ public class Amin {
         xinclude.delegate = machineSpecProcessor
 
 
+        print("Loading machine spec")
         // TODO revisit machine spec - we should trigger this just using
         // TODO passed in URI or default i.e. don't have path magic in
         // TODO spec filter pull into setup aka here / related thing
@@ -61,10 +63,12 @@ public class Amin {
         let spec = machineSpecProcessor.spec!
         spec.buffer = outputStream
 
+        print("Creating Amin Machine")
         // TODO Once we handle custom machines/handler/generator allow such for the moment we just default
         // TODO to AminMachineDispatcher.
         let machine = AminMachineDispatcher(machineSpec: spec)
 
+        print("Parsing profile")
         // This is the core machine parser.
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine

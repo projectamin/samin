@@ -6,11 +6,11 @@
             "sourceLanguages": [
                 "swift"
             ],
-            "args": [],
+            //"args": ["-u http://localhost:3000"],
             "cwd": "${workspaceFolder:samin}",
             "name": "Debug samin-cli",
-            "program": "${workspaceFolder:samin}/.build/debug/samin-cli",
-            "preLaunchTask": "swift: Build Debug samin-cli"
+            "program": "${workspaceFolder:samin}/.build/debug/samin",
+            "preLaunchTask": "swift: Build Debug samin"
         },
         {
             "type": "lldb",
@@ -21,8 +21,8 @@
             "args": [],
             "cwd": "${workspaceFolder:samin}",
             "name": "Release samin-cli",
-            "program": "${workspaceFolder:samin}/.build/release/samin-cli",
-            "preLaunchTask": "swift: Build Release samin-cli"
+            "program": "${workspaceFolder:samin}/.build/release/samin",
+            "preLaunchTask": "swift: Build Release samin"
         },
         {
             "type": "lldb",

@@ -8,7 +8,7 @@
 				"--product",
 				"samin"
 			],
-			"cwd": "/home/swishy/Development/Source/ProjectAmin/samin",
+			"cwd": "/home/swishy/Development/Source/samin",
 			"disableTaskQueue": true,
 			"problemMatcher": [
 				"$swiftc"

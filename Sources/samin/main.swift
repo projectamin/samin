@@ -14,13 +14,13 @@ struct SaminCli: ParsableCommand {
             guard let inputStream = InputStream(fileAtPath: "/dev/stdin") else {
                 throw AminError.streamError(error: "Unable to access stdin")
             }
-            inputStream.open()
+            //inputStream.open()
             let amin = Amin()
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
                 throw AminError.streamError(error: "Unable to access stdout")
             }
-            outputStream.schedule(in: .main, forMode: .default)
-            outputStream.open()
+            //outputStream.schedule(in: .main, forMode: .default)
+            //outputStream.open()
             amin.parse(profileStream: inputStream, outputStream: outputStream)
         }
         if(uri != nil) {
@@ -30,10 +30,12 @@ struct SaminCli: ParsableCommand {
             guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
                 throw AminError.streamError(error: "Unable to access stdout")
             }
-            outputStream.schedule(in: .main, forMode: .default)
-            outputStream.open()
+            print("OutputStream setup")
+            //outputStream.schedule(in: .main, forMode: .default)
+            //outputStream.open()
+            print("Offloading to Amin core")
             try amin.parse(profileUri: url!, outputStream: outputStream)
-            outputStream.close()
+            //outputStream.close()
         }
     }
 }
