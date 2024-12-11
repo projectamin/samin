@@ -10,33 +10,34 @@ struct SaminCli: ParsableCommand {
     var uri: String?
 
     mutating func run() throws {
-        if(profile) {
-            guard let inputStream = InputStream(fileAtPath: "/dev/stdin") else {
-                throw AminError.streamError(error: "Unable to access stdin")
+
+                    if(profile) {
+                guard let inputStream = InputStream(fileAtPath: "/dev/stdin") else {
+                    throw AminError.streamError(error: "Unable to access stdin")
+                }
+                inputStream.open()
+                let amin = Amin()
+                guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
+                    throw AminError.streamError(error: "Unable to access stdout")
+                }
+                outputStream.schedule(in: .current, forMode: .default)
+                outputStream.open()
+                amin.parse(profileStream: inputStream, outputStream: outputStream)
             }
-            //inputStream.open()
-            let amin = Amin()
-            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
-                throw AminError.streamError(error: "Unable to access stdout")
+            if(uri != nil) {
+                let amin = Amin()
+                let url = URL(string: uri!)
+                print("Processing URI: \(uri!)")
+                guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
+                    throw AminError.streamError(error: "Unable to access stdout")
+                }
+                print("OutputStream setup")
+                outputStream.schedule(in: .current, forMode: .default)
+                outputStream.open()
+                print("Offloading to Amin core")
+                try amin.parse(profileUri: url!, outputStream: outputStream)
+                //outputStream.close()
             }
-            //outputStream.schedule(in: .main, forMode: .default)
-            //outputStream.open()
-            amin.parse(profileStream: inputStream, outputStream: outputStream)
-        }
-        if(uri != nil) {
-            let amin = Amin()
-            let url = URL(string: uri!)
-            print("Processing URI: \(uri!)")
-            guard let outputStream = OutputStream(toFileAtPath: "/dev/stdout", append: false) else {
-                throw AminError.streamError(error: "Unable to access stdout")
-            }
-            print("OutputStream setup")
-            //outputStream.schedule(in: .main, forMode: .default)
-            //outputStream.open()
-            print("Offloading to Amin core")
-            try amin.parse(profileUri: url!, outputStream: outputStream)
-            //outputStream.close()
-        }
     }
 }
 

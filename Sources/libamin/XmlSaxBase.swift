@@ -16,7 +16,6 @@ open class XmlSaxBase: NSObject, XMLParserDelegate {
     // This is just a very simple bandaid implementation to replicate basic principal of
     // Perls XML::SAX::Base
     public func parserDidStartDocument(_ parser: XMLParser) {
-        print("start doc")
         delegate?.parserDidStartDocument(parser)
     }
     public func parserDidEndDocument(_ parser: XMLParser) {
