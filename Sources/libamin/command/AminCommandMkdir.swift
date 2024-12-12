@@ -54,9 +54,9 @@ class AminCommandMkdir: AminCommandBase {
             // Check directory exists as belts and braces.
             var successMessage = ""
             if (directory != nil && checkDirectoryExists(path: directory!)) {
-                successMessage += "Created directory \(target) in \(directory) (perm: ="
+                successMessage += "Created directory \(String(describing: target)) in \(String(describing: directory)) (perm: ="
             } else {
-                successMessage += "Created directory \(target) (perm: ="
+                successMessage += "Created directory \(String(describing: target)) (perm: ="
             }
 
             if let mode = mode {
@@ -66,6 +66,8 @@ class AminCommandMkdir: AminCommandBase {
             }
 
             successMessage += ")"
+
+            if (result.type == .out) {result.status = 0}
 
             commandMessage(command: commandName!, success: successMessage, result: result)
         }

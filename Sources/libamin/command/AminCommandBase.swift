@@ -37,19 +37,24 @@ class AminCommandBase: XmlSaxBase {
         // TODO This logic is not yet full baked see Perl implementation.
         let log = spec?.log
         if let status = result.status {
-            // TODO implement support for>
-            // TODO spec.aminError = "red"
-            if let error = result.error {
-                spec?.aminError = true
-                log?.aminError(message: result.error!)
-                log?.error(message: error)
-            }
-            if let out = result.out {
-                log?.aminOut(message: out)
+            switch status {
+                case 0: do {
+                    log?.success(message: success!)
+                    log?.aminOut(message: result.out!)
+                }
+                default: do {
+                    if let error = result.error {
+                        spec?.aminError = true
+                        log?.aminError(message: result.error!)
+                        log?.error(message: error)
+                    }
+                    if let out = result.out {
+                        log?.aminOut(message: out)
+                    }
+                }
             }
         } else {
-            log?.success(message: success!)
-            log?.aminOut(message: result.out!)
+            print("Something wierd happened - check filter.")
         }
     }
 
@@ -84,11 +89,11 @@ class AminCommandBase: XmlSaxBase {
         result.out = output
         result.error = error
         result.status = task.terminationStatus
-        if (error != nil && output != nil) {
+        if ((error != nil && !error!.isEmpty) && (output != nil && output!.isEmpty)) {
             result.type = CommandType.both
-        } else if (error == nil && output != nil) {
+        } else if (error == nil && (output != nil && output!.isEmpty)) {
             result.type = CommandType.out
-        } else if (error != nil && output == nil) {
+        } else if ((error != nil && !error!.isEmpty) && (output == nil || output!.isEmpty)) {
             result.type = CommandType.error
         } else {
             // This is for commands like mkdir which dont return anything on success.

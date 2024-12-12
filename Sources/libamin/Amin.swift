@@ -32,7 +32,7 @@ public class Amin {
     }
 
     public func parse(profileStream: InputStream, outputStream: OutputStream) {
-        print("Parsing profile")
+
         // TODO Not sure this is actually needed....
         //profileStream.schedule(in: .main, forMode: .common)
         //outputStream.schedule(in: .main, forMode: .common)
@@ -68,7 +68,6 @@ public class Amin {
         // TODO to AminMachineDispatcher.
         let machine = AminMachineDispatcher(machineSpec: spec)
 
-        print("Parsing profile")
         // This is the core machine parser.
         let profileParser = XMLParser(stream: profileStream)
         profileParser.delegate = machine
@@ -76,8 +75,10 @@ public class Amin {
         // TODO this is awful crap.
         spec.log?.parser = profileParser
         let result = profileParser.parse()
-        print("\(result)")
-        
+        if !result {
+            spec.aminError = true
+            spec.log?.aminError(message: "Parsing failed!")
+        }
     }
 
     func parse(profileStream: InputStream, machineSpecification: InputStream) {
