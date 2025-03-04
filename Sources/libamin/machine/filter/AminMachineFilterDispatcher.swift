@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(FoundationXML)
 import FoundationXML
+#endif
 
 class AminMachineFilterDispatcher: XmlSaxBase {
     required init() {
