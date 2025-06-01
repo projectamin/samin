@@ -40,14 +40,9 @@ class AminCommandMkdir: AminCommandBase {
             case "target":
                 target = string
                 break
-            case "mode":
-                print("MODE FOUND: \(string)")
-                mode = string
-            case "m":
-                mode = string
             default:
-                // Don't need to do anything here element won't be supported by filter.
-                break
+                // Make sure we default to firing up the chain
+                super.parser(parser, foundCharacters: string)
             }
         }
         super.parser(parser, foundCharacters: string)
