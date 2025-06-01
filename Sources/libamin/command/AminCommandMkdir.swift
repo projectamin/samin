@@ -1,7 +1,8 @@
 import Foundation
 import Regex
+
 #if canImport(FoundationXML)
-import FoundationXML
+    import FoundationXML
 #endif
 
 class AminCommandMkdir: AminCommandBase {
@@ -11,26 +12,31 @@ class AminCommandMkdir: AminCommandBase {
     // Used to replicate Perl tracking current element via spec..
     private let prefix = "amin"
     private let localName = "command"
-    private var mode: String?;
+    private var mode: String?
     public var target: String?
 
-    public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    public override func parser(
+        _ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?,
+        qualifiedName qName: String?, attributes attributeDict: [String: String]
+    ) {
         spec?.prefix = prefix
         spec?.localname = localName
         commandName = "mkdir"
-        super.parser(_: parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
+        super.parser(
+            _: parser, didStartElement: elementName, namespaceURI: namespaceURI,
+            qualifiedName: qName, attributes: attributeDict)
     }
 
     public override func parser(_ parser: XMLParser, foundCharacters string: String) {
-        if(command == commandName) {
+        if command == commandName {
             let localname = getElement(fullElement: element!).localName
-            switch(localname) {
+            switch localname {
             case "param":
                 processParameters(characters: string)
-                break;
+                break
             case "flag":
                 processFlag(characters: string)
-                break;
+                break
             case "target":
                 target = string
                 break
@@ -42,21 +48,27 @@ class AminCommandMkdir: AminCommandBase {
         super.parser(parser, foundCharacters: string)
     }
 
-    override func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    override func parser(
+        _ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?,
+        qualifiedName qName: String?
+    ) {
         let element = getElement(fullElement: elementName)
-        if(element.localName == localName && command == commandName) {
+        if element.localName == localName && command == commandName {
             let params = parameters
             var flags = flags
             if let mode = mode {
                 flags.append(modeFlags[0])
                 flags.append(mode)
             }
+            self.flags = flags
+            self.parameters = params
             let result = launchCommand()
 
             // Check directory exists as belts and braces.
             var successMessage = ""
-            if (directory != nil && checkDirectoryExists(path: directory!)) {
-                successMessage += "Created directory \(String(describing: target)) in \(String(describing: directory)) (perm: ="
+            if directory != nil && checkDirectoryExists(path: directory!) {
+                successMessage +=
+                    "Created directory \(String(describing: target)) in \(String(describing: directory)) (perm: ="
             } else {
                 successMessage += "Created directory \(String(describing: target)) (perm: ="
             }
@@ -69,12 +81,13 @@ class AminCommandMkdir: AminCommandBase {
 
             successMessage += ")"
 
-            if (result.type == .out) {result.status = 0}
+            if result.type == .out { result.status = 0 }
 
             commandMessage(command: commandName!, success: successMessage, result: result)
         }
 
-        super.parser(_: parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
+        super.parser(
+            _: parser, didEndElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName)
     }
 
     func checkDirectoryExists(path: String) -> Bool {
@@ -88,19 +101,21 @@ class AminCommandMkdir: AminCommandBase {
     func processParameters(characters: String) {
         let clean = characters.trimmingCharacters(in: NSCharacterSet.controlCharacters)
         let things = clean.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
-        things.forEach{ item in
-            if(!item.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
+        things.forEach { item in
+            if !item.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 parameters.append(item)
             }
         }
     }
 
     func processFlag(characters: String) {
-        if attributes!["Value"] != nil {
-            if(modeFlags.contains(characters)) {
-                mode = characters
-            } else {
-                flags = characters.split(using: #"/\s+/"#.r)
+        if modeFlags.contains(characters) {
+            mode = characters
+        } else {
+            let trimmed = characters.replacingOccurrences(
+                of: "^\\s*", with: "", options: .regularExpression)
+            if !trimmed.isEmpty {
+                flags.append(trimmed)
             }
         }
     }

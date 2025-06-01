@@ -2,5 +2,6 @@
     <amin:command name="mkdir">
         <amin:param name="target">/tmp/amin-tests/my_new_dir</amin:param>
         <amin:flag>p</amin:flag>
+        <amin:flag>v</amin:flag>
     </amin:command>
 </amin:profile>

@@ -1,6 +1,7 @@
 import Foundation
+
 #if canImport(FoundationXML)
-import FoundationXML
+    import FoundationXML
 #endif
 
 // This is reflective of Amin::Elt - just found the original naming confusing.
@@ -12,18 +13,21 @@ class AminCommandBase: XmlSaxBase {
     public var parameters = [String]()
     public var command: String?
     public var commandName: String?
-    public var attributes: [String : String]?
+    public var attributes: [String: String]?
     public var environmentVariables = [String: String]()
     public var element: String?
 
-    public override func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    public override func parser(
+        _ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?,
+        qualifiedName qName: String?, attributes attributeDict: [String: String]
+    ) {
         let prefix = spec?.prefix ?? ""
         let localName = spec?.localname ?? ""
         attributes = attributeDict
         let element = getElement(fullElement: elementName)
         // We double check the current prefix/localname to prevent for example amin::mkdir being executed
         // instead of my_corp::mkdir
-        if(element.prefix == prefix && element.localName == localName) {
+        if element.prefix == prefix && element.localName == localName {
             if let name = attributeDict["name"] {
                 command = name
             } else {
@@ -31,20 +35,23 @@ class AminCommandBase: XmlSaxBase {
             }
         }
         self.element = elementName
-        super.parser(_: parser, didStartElement: elementName, namespaceURI: namespaceURI, qualifiedName: qName, attributes: attributeDict)
+        super.parser(
+            _: parser, didStartElement: elementName, namespaceURI: namespaceURI,
+            qualifiedName: qName, attributes: attributeDict)
     }
-
 
     func commandMessage(command: String, success: String?, result: CommandResult) {
         // TODO This logic is not yet full baked see Perl implementation.
         let log = spec?.log
         if let status = result.status {
             switch status {
-                case 0: do {
+            case 0:
+                do {
                     log?.success(message: success!)
                     log?.aminOut(message: result.out!)
                 }
-                default: do {
+            default:
+                do {
                     if let error = result.error {
                         spec?.aminError = true
                         log?.aminError(message: result.error!)
@@ -63,9 +70,13 @@ class AminCommandBase: XmlSaxBase {
     func launchCommand() -> CommandResult {
         let log = spec?.log
         var arguments = ["\(command!)"]
-        arguments.append(contentsOf: flags)
+        arguments.append(
+            contentsOf: flags.map({
+                flag in
+                let clean = flag.replacingOccurrences(of: "-", with: "")
+                return "-\(clean)"
+            }))
         arguments.append(contentsOf: parameters)
-
         // TODO Support debug.
         // TODO get pipe to spec.buffer
         let outputPipe = Pipe()
@@ -73,6 +84,7 @@ class AminCommandBase: XmlSaxBase {
         let task = Process()
         task.environment = environmentVariables
         task.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        log?.aminOut(message: "\(arguments)")
         task.arguments = arguments
         task.standardError = errorPipe
         task.standardOutput = outputPipe
@@ -91,11 +103,11 @@ class AminCommandBase: XmlSaxBase {
         result.out = output
         result.error = error
         result.status = task.terminationStatus
-        if ((error != nil && !error!.isEmpty) && (output != nil && output!.isEmpty)) {
+        if (error != nil && !error!.isEmpty) && (output != nil && output!.isEmpty) {
             result.type = CommandType.both
-        } else if (error == nil && (output != nil && output!.isEmpty)) {
+        } else if error == nil && (output != nil && output!.isEmpty) {
             result.type = CommandType.out
-        } else if ((error != nil && !error!.isEmpty) && (output == nil || output!.isEmpty)) {
+        } else if (error != nil && !error!.isEmpty) && (output == nil || output!.isEmpty) {
             result.type = CommandType.error
         } else {
             // This is for commands like mkdir which dont return anything on success.
@@ -105,14 +117,17 @@ class AminCommandBase: XmlSaxBase {
         return result
     }
 
-    func charactersShell(elementName: String, attributes attributeDict: [String : String], foundCharacters string: String) {
+    func charactersShell(
+        elementName: String, attributes attributeDict: [String: String],
+        foundCharacters string: String
+    ) {
         let element = getElement(fullElement: elementName)
-        if(element.localName == "shell") {
+        if element.localName == "shell" {
             if let dir = attributeDict["dir"] {
                 directory = dir
             }
         }
-        if(element.localName == "env") {
+        if element.localName == "env" {
             if let variable = attributeDict["env"] {
                 environmentVariables(variable: variable)
             }
