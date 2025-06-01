@@ -28,7 +28,12 @@ class AminCommandMkdir: AminCommandBase {
     }
 
     public override func parser(_ parser: XMLParser, foundCharacters string: String) {
-        if command == commandName {
+
+        if command == commandName
+            && !string.replacingOccurrences(
+                of: "^\\s*", with: "", options: .regularExpression
+            ).isEmpty
+        {
             let localname = getElement(fullElement: element!).localName
             switch localname {
             case "param":
@@ -37,12 +42,9 @@ class AminCommandMkdir: AminCommandBase {
             case "flag":
                 processFlag(characters: string)
                 break
-            case "target":
-                target = string
-                break
             default:
                 // Make sure we default to firing up the chain
-                super.parser(parser, foundCharacters: string)
+                break
             }
         }
         super.parser(parser, foundCharacters: string)
@@ -57,17 +59,16 @@ class AminCommandMkdir: AminCommandBase {
             if let mode = self.mode {
                 parameters.append("mode=\(mode)")
             }
-            //self.flags = flags
-            //self.parameters = params
+
             let result = launchCommand()
 
             // Check directory exists as belts and braces.
             var successMessage = ""
             if directory != nil && checkDirectoryExists(path: directory!) {
                 successMessage +=
-                    "Created directory \(String(describing: target)) in \(String(describing: directory)) (perm: ="
+                    "Created directory \(String(describing: self.target)) in \(String(describing: directory)) (perm: ="
             } else {
-                successMessage += "Created directory \(String(describing: target)) (perm: ="
+                successMessage += "Created directory \(String(describing: self.target)) (perm: ="
             }
 
             if let mode = mode {
@@ -95,24 +96,34 @@ class AminCommandMkdir: AminCommandBase {
         return false
     }
 
+    func processFlag(characters: String) {
+        let trimmed = characters.replacingOccurrences(
+            of: "^\\s*", with: "", options: .regularExpression)
+        if let name = self.attributes?["name"] {
+            if modeFlags.contains(name) && !name.isEmpty {
+                mode = trimmed
+            }
+            return
+        }
+
+        // Allows defining flags as single XML element or not.
+        if !trimmed.isEmpty {
+            flags.append(contentsOf: trimmed.map { String($0) })
+        }
+    }
+
     func processParameters(characters: String) {
         let clean = characters.trimmingCharacters(in: NSCharacterSet.controlCharacters)
+        if let name = self.attributes?["name"] {
+            if name == "target" {
+                self.target = clean
+                return
+            }
+        }
         let things = clean.split(using: #"m/([\*\+\.\w=\/-]+|'[^']+')\s*/g"#.r)
         things.forEach { item in
             if !item.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 parameters.append(item)
-            }
-        }
-    }
-
-    func processFlag(characters: String) {
-        if modeFlags.contains(characters) {
-            mode = characters
-        } else {
-            let trimmed = characters.replacingOccurrences(
-                of: "^\\s*", with: "", options: .regularExpression)
-            if !trimmed.isEmpty {
-                flags.append(trimmed)
             }
         }
     }
