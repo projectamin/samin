@@ -40,6 +40,11 @@ class AminCommandMkdir: AminCommandBase {
             case "target":
                 target = string
                 break
+            case "mode":
+                print("MODE FOUND: \(string)")
+                mode = string
+            case "m":
+                mode = string
             default:
                 // Don't need to do anything here element won't be supported by filter.
                 break
@@ -54,14 +59,11 @@ class AminCommandMkdir: AminCommandBase {
     ) {
         let element = getElement(fullElement: elementName)
         if element.localName == localName && command == commandName {
-            let params = parameters
-            var flags = flags
-            if let mode = mode {
-                flags.append(modeFlags[0])
-                flags.append(mode)
+            if let mode = self.mode {
+                parameters.append("mode=\(mode)")
             }
-            self.flags = flags
-            self.parameters = params
+            //self.flags = flags
+            //self.parameters = params
             let result = launchCommand()
 
             // Check directory exists as belts and braces.
