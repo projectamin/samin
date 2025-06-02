@@ -15,10 +15,13 @@ final class saminTests: XCTestCase, StreamDelegate {
             "<machine xmlns:amin=\"http://projectamin.org/ns/\"><name>Amin::Machine::Dispatcher</name><filter name=\"Amin::Command::Mkdir\"><namespace>amin</namespace><element>command</element><name>mkdir</name><position>middle</position><download>http://projectamin.org/filters/amin/command/mkdir.xml</download><version>1.0</version></filter></machine>"
         let profile =
             "<amin:command name='mkdir' xmlns:amin='http://projectamin.org/ns/'><amin:flag name='m'>0755</amin:flag><amin:param name=\"target\">/tmp/test_ashell</amin:param></amin:command>"
-        let data = profile.data(using: .utf8)
-        let inputStream = InputStream(data: data!)
+        let specStream = InputStream(data: spec.data(using: .utf8)!)
+        let inputStream = InputStream(data: profile.data(using: .utf8)!)
         let outputStream = OutputStream(toMemory: ())
-        amin.parse(profileStream: inputStream, outputStream: outputStream)
+        outputStream.open()
+        amin.parse(
+            profileStream: inputStream, outputStream: outputStream, machineSpecification: specStream
+        )
 
         //assert(outputStream.streamStatus == .open)
     }
