@@ -9,7 +9,7 @@ final class saminTests: XCTestCase, StreamDelegate {
         print(eventCode)
     }
 
-    func testCrankSamin() {
+    func testStreamMachineSpecification() {
         let amin = Amin()
         let spec =
             "<machine xmlns:amin=\"http://projectamin.org/ns/\"><name>Amin::Machine::Dispatcher</name><filter name=\"Amin::Command::Mkdir\"><namespace>amin</namespace><element>command</element><name>mkdir</name><position>middle</position><download>http://projectamin.org/filters/amin/command/mkdir.xml</download><version>1.0</version></filter></machine>"
@@ -53,7 +53,7 @@ final class saminTests: XCTestCase, StreamDelegate {
     }
 
     static var allTests = [
-        ("testCrankSamin", testCrankSamin)
+        ("testCrankSamin", testStreamMachineSpecification)
         //("testEcho", testEcho),
         //("testArch", testArch),
     ]
