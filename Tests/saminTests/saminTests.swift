@@ -11,12 +11,14 @@ final class saminTests: XCTestCase, StreamDelegate {
 
     func testCrankSamin() {
         let amin = Amin()
+        let spec =
+            "<machine xmlns:amin=\"http://projectamin.org/ns/\"><name>Amin::Machine::Dispatcher</name><filter name=\"Amin::Command::Mkdir\"><namespace>amin</namespace><element>command</element><name>mkdir</name><position>middle</position><download>http://projectamin.org/filters/amin/command/mkdir.xml</download><version>1.0</version></filter></machine>"
         let profile =
             "<amin:command name='mkdir' xmlns:amin='http://projectamin.org/ns/'><amin:flag name='m'>0755</amin:flag><amin:param name=\"target\">/tmp/test_ashell</amin:param></amin:command>"
         let data = profile.data(using: .utf8)
-        //let inputStream = InputStream(data: data!)
-        //let outputStream = OutputStream(toMemory: ())
-        //amin.parse(profileStream: inputStream, outputStream: outputStream)
+        let inputStream = InputStream(data: data!)
+        let outputStream = OutputStream(toMemory: ())
+        amin.parse(profileStream: inputStream, outputStream: outputStream)
 
         //assert(outputStream.streamStatus == .open)
     }
